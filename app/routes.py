@@ -3,4 +3,9 @@ from flask import render_template
 
 @app.route('/')
 def index():
-    return(render_template('index.html'))
+    query = "shop data"
+    return(render_template('index.html', data=query))
+
+@app.route('/shop')
+def shop():
+    return(render_template('shop.html'))
