@@ -1,2 +1,99 @@
-<h1> Home Page</h1>
-<h2>{{data}}</h2>
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <title>Project </title>
+  </head>
+  <body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <div class = "container-fluid">
+        <div class = "row">
+            <div class="col-10 d-flex justify-content-center" style="background-color: grey;">
+                <h1>Home Page</h1>
+            </div>
+            <div class="col-1 d-flex justify-content-center">
+                <button type="button" class="btn btn-primary">Sign Up</button>
+            </div>
+            <div class="col-1 d-flex justify-content-center">
+                <button type="button" class="btn btn-primary">Login</button>
+            </div>
+        </div>
+
+        <div class = "row mt-5">
+            <div class = "col-12 d-flex justify-content-center">
+                <form class="form-inline">
+                    <div class="form-group">
+                      <input type="search" class="form-control" id="searchbar" placeholder="search">
+                    </div>
+                    <button type="submit" class="btn btn-primary mb-2">Search</button>
+                  </form>
+            </div>
+        </div>
+
+        <div class = "row mt-5">
+            <div class = "col-12 d-flex justify-content-center">
+                <p>Notification: Happy Spring</p>
+            </div>
+        </div>
+
+        <!-- Making image grid Should use python and jinja to just loop through all items-->
+        <div class = "row mt-5">
+            <div class = "col-2 offset-2">
+                <img src="./static/download.jpg" alt="phone">
+                <h1>Phone 1</h1>
+                <p>
+                    Item Description    
+                </p>
+            </div>
+            <div class = "col-2 offset-1">
+                <img src="./static/download.jpg" alt="phone">
+                <h1>Phone 2</h1>
+                <p>
+                    Item Description    
+                </p>
+            </div>
+            <div class = "col-2 offset-1">
+                <img src="./static/download.jpg" alt="phone">
+                <h1>Phone 3</h1>
+                <p>
+                    Item Description    
+                </p>
+            </div>
+        </div>
+        <div class = "row mt-5">
+            <div class = "col-2 offset-2">
+                <img src="./static/download.jpg" alt="phone">
+                <h1>Phone 4</h1>
+                <p>
+                    Item Description    
+                </p>
+            </div>
+            <div class = "col-2 offset-1">
+                <img src="./static/download.jpg" alt="phone">
+                <h1>Phone 5</h1>
+                <p>
+                    Item Description    
+                </p>
+            </div>
+            <div class = "col-2 offset-1">
+                <img src="./static/download.jpg" alt="phone">
+                <h1>Phone 6</h1>
+                <p>
+                    Item Description    
+                </p>
+            </div>
+        </div>
+        
+        
+
+        
+    </div>
+  </body>
+</html>
+
