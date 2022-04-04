@@ -7,7 +7,6 @@ def index():
     This route should be the main page, 
     grid of all items
     """
-    query = "shop data"
     parent_list = [
             {'Phone1': ["Item Description", "./static/download.jpg"]}, 
             {'Phone2': ["Item Description", "./static/download.jpg"] }, 

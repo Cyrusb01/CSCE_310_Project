@@ -83,50 +83,16 @@
 
       <!-- Making image grid Should use python and jinja to just loop through all items-->
         <div class="row mt-5">
-        {% for dict_item in data %}
-            {% for key, value in dict_item.items() %}
-                    <div class="col-2 offset-1">
-                        <img src= {{value[1]}} alt="phone" />
-                        <h1>{{key}}</h1>
-                        <p>{{value[0]}}</p>
-                    </div>
+            {% for dict_item in data %}
+                {% for key, value in dict_item.items() %}
+                        <div class="col-3 offset-1 mb-5">
+                            <img src= {{value[1]}} alt="phone" />
+                            <h1>{{key}}</h1>
+                            <p>{{value[0]}}</p>
+                        </div>
+                {% endfor %}
             {% endfor %}
-        {% endfor %}
         </div>
-      <!-- <div class="row mt-5">
-        <div class="col-2 offset-2">
-          <img src="./static/download.jpg" alt="phone" />
-          <h1>Phone 1</h1>
-          <p>Item Description</p>
-        </div>
-        <div class="col-2 offset-1">
-          <img src="./static/download.jpg" alt="phone" />
-          <h1>Phone 2</h1>
-          <p>Item Description</p>
-        </div>
-        <div class="col-2 offset-1">
-          <img src="./static/download.jpg" alt="phone" />
-          <h1>Phone 3</h1>
-          <p>Item Description</p>
-        </div>
-      </div>
-      <div class="row mt-5">
-        <div class="col-2 offset-2">
-          <img src="./static/download.jpg" alt="phone" />
-          <h1>Phone 4</h1>
-          <p>Item Description</p>
-        </div>
-        <div class="col-2 offset-1">
-          <img src="./static/download.jpg" alt="phone" />
-          <h1>Phone 5</h1>
-          <p>Item Description</p>
-        </div>
-        <div class="col-2 offset-1">
-          <img src="./static/download.jpg" alt="phone" />
-          <h1>Phone 6</h1>
-          <p>Item Description</p>
-        </div>
-      </div> -->
     </div>
   </body>
 </html>
