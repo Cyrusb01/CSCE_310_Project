@@ -83,15 +83,17 @@
 
       <!-- Making image grid Should use python and jinja to just loop through all items-->
         <div class="row mt-5">
-            {% for dict_item in data %}
-                {% for key, value in dict_item.items() %}
-                        <div class="col-3 offset-1 mb-5">
-                            <img src= {{value[1]}} alt="phone" />
-                            <h1>{{key}}</h1>
-                            <p>{{value[0]}}</p>
-                        </div>
-                {% endfor %}
+          {% for dict_item in data %}
+            {% for key, value in dict_item.items() %}
+              <div class="col-3 offset-1 mb-5">
+                <a href="{{url_for('item')}}">
+                  <img src= {{value[1]}} alt="phone" />
+                </a>
+                <h1>{{key}}</h1>
+                <p>{{value[0]}}</p>
+              </div>
             {% endfor %}
+          {% endfor %}
         </div>
     </div>
   </body>
