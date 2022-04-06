@@ -1,7 +1,3 @@
-from ast import In
-from email.policy import default
-from enum import unique
-# from xmlrpc.client import Boolean
 from sqlalchemy.orm import declarative_base
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Float, Boolean
 from datetime import datetime
@@ -40,7 +36,6 @@ class Notification(Base):
     def __repr__(self):
         return f"<Notification(notification_id={self.notification_id}, user_id={self.user_id}, notif_desc={self.notif_desc}, date_made={self.date_made})"
 
-
 class Item(Base):
     __tablename__ = 'item'
     item_id = Column(Integer, primary_key=True)
@@ -61,7 +56,6 @@ class Warnings(Base):
 
     def __repr__(self):
         return f"<Warning(warning_id={self.warning_id}, warning_desc={self.warning_desc})"
-
 
 class Bidding(Base):
     __tablename__ = 'bidding'
