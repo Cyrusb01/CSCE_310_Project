@@ -7,6 +7,9 @@ conda env export > environment.yml
 ## Creat environment from file 
 conda env create -f environment.yml
 
+# Update environment from File 
+conda activate csce310
+conda env update --file environment.yml --prune
 
 ## Alembic 
 
