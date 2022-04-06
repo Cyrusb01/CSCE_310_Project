@@ -31,10 +31,6 @@
 			.search-bar {
 				width: 35%;
 			}
-
-			.item-body {
-				width: 75%
-			}
 		</style>
 	</head>
 
@@ -60,7 +56,7 @@
 						id="searchbar"
 						placeholder="Search"
 					/>
-					<button class="btn btn-outline-secondary" type="button" id="button-addon2">
+					<button class="btn btn-outline-secondary" type="button" id="searchbutton">
 						Search
 						<!-- <i class="search-icon fa-solid fa-magnifying-glass"></i> -->
 					</button>
@@ -69,15 +65,15 @@
 		</div>
 		<div class="row mt-5 w-75 mx-auto">
 			<div class="col-6 justify-content-center">
-				<div class="justify-content-center">
-					<img src="{{item_pic_path}}" class="img-thumbnail w-75 mx-auto d-block" alt="item picture" />
-				</div>
+				<img src="{{item_pic_path}}" class="img-thumbnail w-75 mx-auto d-block" alt="item picture" />
 			</div>
 			<div class="col-6">
-				<div class=""></div>
 				<h1 class="display-5">{{item_name}}</h1>
-				<h5 class="">${{item_price}}</h5>
-				<p class="w-75">{{item_desc}}</p>
+				<div class="d-flex">
+					<h5 class="my-auto">${{item_price}}</h5>
+					<button class="btn btn-outline-primary ms-2" type="button" id="buybutton">Buy Now</button>
+				</div>
+				<p class="w-75 mt-2">{{item_desc}}</p>
 			</div>
 		</div>
 	</body>
