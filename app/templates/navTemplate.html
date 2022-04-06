@@ -13,6 +13,12 @@
       crossorigin="anonymous"
     />
 
+		<!-- Font Awesome -->
+		<script
+      src="https://kit.fontawesome.com/ccae617d2b.js"
+      crossorigin="anonymous"
+    ></script>
+
     <title>Project</title>
   </head>
   <body>
@@ -22,21 +28,42 @@
       crossorigin="anonymous"
     ></script>
 
-    <nav class="navbar navbar-expand-sm bg-light">
-      <div class="container-fluid">
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link" href="#">Link 1</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Link 2</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Link 3</a>
-          </li>
-        </ul>
-      </div>
-    </nav>
+    <!-- Navbar -->
+		<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+			<div class="container-fluid">
+				<a class="navbar-brand" href="{{url_for('index')}}">Logo</a>
+			</div>
+			<div class="collapse navbar-collapse col-9 me-5" id="navbarSupportedContent">
+				<ul class="navbar-nav ms-auto">
+					<li class="nav-item">
+						<a
+							class="nav-link btn btn-outline-secondary"
+							href="{{ url_for('login') }}"
+							>Sign In / Sign Up</a
+						>
+					</li>
+				</ul>
+			</div>
+		</nav>
+
+		<!-- Search Bar -->
+		<div class="row mt-5 justify-content-center">
+			<div class="search-bar col-12 d-flex justify-content-center">
+				<div class="input-group">
+					<input
+						type="search"
+						class="form-control"
+						id="searchbar"
+						placeholder="Search"
+					/>
+					<button class="btn btn-outline-secondary" type="button" id="searchbutton">
+						Search
+						<!-- <i class="search-icon fa-solid fa-magnifying-glass"></i> -->
+					</button>
+				</div>
+			</div>
+		</div>
+    
     {% block content %} {% endblock %}
   </body>
 </html>
