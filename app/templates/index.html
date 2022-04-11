@@ -98,11 +98,11 @@
           {% for dict_item in data %}
             {% for key, value in dict_item.items() %}
               <div class="col-3 offset-1 mb-5">
-                <a href="{{url_for('item')}}">
-                  <img src= {{value[1]}} alt="phone" />
+                <a href="{{url_for('item', id = key )}}">
+                  <img src= {{value[2]}} alt="phone" height="200" width="200" />
                 </a>
-                <h1>{{key}}</h1>
-                <p>{{value[0]}}</p>
+                <h1>{{value[0]}}</h1>
+                <p>{{value[1]}}</p>
               </div>
             {% endfor %}
           {% endfor %}

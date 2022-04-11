@@ -12,33 +12,37 @@ def index():
     This route should be the main page, 
     grid of all items
     """
-    parent_list = [
-        {'Phone1': ["Item Description", "./static/download.jpg"]},
-        {'Phone2': ["Item Description", "./static/download.jpg"]},
-        {'Phone3': ["Item Description", "./static/download.jpg"]},
-        {'Phone4': ["Item Description", "./static/download.jpg"]},
-        {'Phone5': ["Item Description", "./static/download.jpg"]},
-        {'Phone6': ["Item Description", "./static/download.jpg"]},
-        {'Phone7': ["Item Description", "./static/download.jpg"]},
-        {'Phone8': ["Item Description", "./static/download.jpg"]},
-        {'Phone9': ["Item Description", "./static/download.jpg"]},
-        {'Phone10': ["Item Description", "./static/download.jpg"]}]
-    return(render_template('index.html', data=parent_list))
+
+    data = db.engine.execute("SELECT * FROM item")
+    data_dict = [{x.item_id: [x.item_name, x.item_desc, x.pic_url]} for x in data]
+    print(data_dict)
+    # parent_list = [
+    #     {'Phone1': ["Item Description", "https://m.media-amazon.com/images/I/61s0IaMcKtL._AC_SL1500_.jpg"]},
+    #     {'Phone2': ["Item Description", "./static/download.jpg"]},
+    #     {'Phone3': ["Item Description", "./static/download.jpg"]},
+    #     {'Phone4': ["Item Description", "./static/download.jpg"]},
+    #     {'Phone5': ["Item Description", "./static/download.jpg"]},
+    #     {'Phone6': ["Item Description", "./static/download.jpg"]},
+    #     {'Phone7': ["Item Description", "./static/download.jpg"]},
+    #     {'Phone8': ["Item Description", "./static/download.jpg"]},
+    #     {'Phone9': ["Item Description", "./static/download.jpg"]},
+    #     {'Phone10': ["Item Description", "./static/download.jpg"]}]
+
+
+    return(render_template('index.html', data=data_dict))
 
 
 @app.route('/shop')
 def shop():
     return(render_template('shop.html'))
 
-@app.route('/item')
-def item():
-    item_name = "Test Item Name"
-    item_price = 310.99
-    item_desc = """Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
-    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
-    Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."""
-    item_pic_path = "./static/download.jpg"
+@app.route('/item/<id>')
+def item(id):
+    data = db.engine.execute("SELECT * FROM item WHERE item_id = {}".format(id)).first()
+    item_name = data.item_name
+    item_price = data.item_price
+    item_desc = data.item_desc
+    item_pic_path = data.pic_url
     item_rating = 3.7
     item_reviews = [["User Name", 3, """Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
     Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."""], ["User Name 1", 5, """Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
@@ -46,7 +50,7 @@ def item():
     Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
     Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."""]]
 
-    return(render_template('item.html', **locals()))
+    return(render_template('item.html', item_name=item_name, item_price=item_price, item_desc=item_desc, item_pic_path=item_pic_path, item_rating=item_rating, item_reviews=item_reviews))
 
 
 @app.route("/register", methods=['GET', 'POST'])
