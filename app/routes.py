@@ -78,3 +78,7 @@ def login():
         else:
             flash('Login Unsuccessful. Please check email and password', 'danger')
     return render_template('login.html', title='Login', form=form)
+
+@app.route("/admin", methods=['GET', 'POST'])
+def admin():
+    return render_template('admin.html', title='admin')
