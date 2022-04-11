@@ -21,11 +21,16 @@
       integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
       crossorigin="anonymous"
     ></script>
+
+    <!-- Navbar -->
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">Logo</a>
+        <a class="navbar-brand ms-3" href="{{url_for('index')}}">Logo</a>
       </div>
-      <div class="collapse navbar-collapse col-9" id="navbarSupportedContent">
+      <div
+        class="collapse navbar-collapse col-9 me-4"
+        id="navbarSupportedContent"
+      >
         <ul class="navbar-nav ms-auto">
           <li class="nav-item">
             <a
@@ -59,23 +64,30 @@
         </div> 
       </div>
 -->
-      <div class="row mt-5">
-        <div class="col-12 d-flex justify-content-center">
-          <form class="form-inline">
-            <div class="form-group">
-              <input
-                type="search"
-                class="form-control"
-                id="searchbar"
-                placeholder="search"
-              />
-            </div>
-            <button type="submit" class="btn btn-primary mb-2">Search</button>
-          </form>
+
+    <!-- Search Bar -->
+    <div class="row mt-5 justify-content-center mx-auto">
+      <div class="search-bar col-12 d-flex justify-content-center" style="width: 35%">
+        <div class="input-group">
+          <input
+            type="search"
+            class="form-control"
+            id="searchbar"
+            placeholder="Search"
+          />
+          <button
+            class="btn btn-outline-secondary"
+            type="button"
+            id="searchbutton"
+          >
+            Search
+            <!-- <i class="search-icon fa-solid fa-magnifying-glass" styles="font-size: 1.4em"></i> -->
+          </button>
         </div>
       </div>
+    </div>
 
-      <div class="row mt-5">
+      <div class="row mt-5 mx-auto">
         <div class="col-12 d-flex justify-content-center">
           <p>Notification: Happy Spring</p>
         </div>
