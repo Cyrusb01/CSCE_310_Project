@@ -69,11 +69,8 @@ def login():
     #     return redirect(url_for('dashboard'))
     form = LoginForm()
     if form.validate_on_submit():
-        print("insdie")
-        user = User.query.filter_by(email=form.email.data, password=form.password.data).first()
-        print(user)
+        user = db.session.query(User).filter_by(email=form.email.data, password=form.password.data).first()
         if user:
-            login_user(user, remember=form.remember.data)
             return redirect(url_for('index'))
         else:
             flash('Login Unsuccessful. Please check email and password', 'danger')
