@@ -18,5 +18,4 @@
 
 .nav-link:hover .fa {
   transform: rotate(360deg);
-  color: red;
 }

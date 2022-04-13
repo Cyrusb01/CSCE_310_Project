@@ -1,8 +1,84 @@
 {% extends 'adminTemplate.html'%} {% block title %} ban_users {% endblock %}
 {%block content %}
 <h1>{% block admin_title %} Manage Ban User {% endblock %}</h1>
-<p>
-  thop hugyufrystersr gugkjhh hop hugyufrystersr gugkj hop hugyufrystersr gugkj
-  hop hugyufrystersr gugkj hop hugyufrystersr gugkj
-</p>
+<p>Who wants to be around bad people huh?</p>
+<div class="row mt-4">
+  <div class="col-lg-6 col-md-6 mt-4 mb-4">
+    <div class="card z-index-2">
+      <div
+        class="card-header p-0 position-relative mt-n4 mx-3 my-4 z-index-2 bg-transparent"
+      >
+        <!-- add ban user form -->
+        <h2 class="text-center">Add ban user</h2>
+        <div>
+          <form class="px-4 py-3" action="" method="POST">
+            <div class="mb-3">
+              <label for="exampleDropdownFormEmail1" class="form-label"
+                >Username</label
+              >
+
+              <input
+                type="text"
+                name="username"
+                class="form-control"
+                placeholder="Username"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="exampleDropdownFormPassword1" class="form-label"
+                >Email</label
+              >
+              <input
+                type="password"
+                name="password"
+                class="form-control"
+                id="exampleDropdownFormPassword1"
+                placeholder="Email"
+              />
+            </div>
+            <button type="submit" class="btn btn-primary">Add</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6 col-md-6 mt-4 mb-4">
+    <div class="card z-index-2">
+      <div
+        class="card-header p-0 position-relative mt-n4 mx-3 my-4 z-index-2 bg-transparent"
+      >
+        <!-- add ban user form -->
+        <h2 class="text-center">Delete ban user</h2>
+        <div>
+          <form class="px-4 py-3" action="" method="POST">
+            <div class="mb-3">
+              <label for="exampleDropdownFormEmail1" class="form-label"
+                >Username</label
+              >
+              <input
+                type="text"
+                name="username"
+                class="form-control"
+                placeholder="Username"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="exampleDropdownFormPassword1" class="form-label"
+                >Email</label
+              >
+              <input
+                type="password"
+                name="password"
+                class="form-control"
+                id="exampleDropdownFormPassword1"
+                placeholder="Email"
+              />
+            </div>
+            <button type="submit" class="btn btn-primary">Delete</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
