@@ -82,3 +82,15 @@ def login():
 @app.route("/admin", methods=['GET', 'POST'])
 def admin():
     return render_template('admin.html', title='admin')
+
+@app.route("/ban_users", methods=['GET', 'POST'])
+def ban_users():
+    return render_template('banUsers.html', title='ban_users')
+
+@app.route("/notification", methods=['GET', 'POST'])
+def notification():
+    return render_template('notification.html', title='notification')
+
+@app.route("/warning", methods=['GET', 'POST'])
+def warning():
+    return render_template('warning.html', title='warning')
