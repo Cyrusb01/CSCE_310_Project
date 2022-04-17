@@ -58,13 +58,15 @@
       <!-- Sidebar -->
       <div class="col-2">
         <ul class="nav flex-column text-center">
-          <li class="nav-item"> <a href="{{ url_for('admin')}}" class="nav-link active py-3 border-bottom" style="color: black"> <i class="fa fa-home" style="color: rgb(0, 170, 255)"></i> <medium>Home</medium> </a> 
+          <li class="nav-item"> <a href="{{ url_for('admin')}}" class="nav-link active py-3 border-bottom" style="color: black"> <i class="fa fa-home" style="color: black"></i> <medium>Home</medium> </a> 
           </li>
           <li> <a href="{{ url_for('ban_users') }}" class="nav-link py-3 border-bottom" style="color: black"> <i class="fa fa-user-slash" style="color: red"></i> <medium>Ban Users</medium> </a> 
           </li>
-          <li> <a href="{{ url_for('notification') }}" class="nav-link py-3 border-bottom" style="color: black"> <i class="fa fa-circle-exclamation" style="color: #87c9fb"></i> <medium>Post Notifications</medium> </a> 
+          <li> <a href="{{ url_for('notification') }}" class="nav-link py-3 border-bottom" style="color: black"> <i class="fa fa-circle-exclamation" style="color: #FF7F50"></i> <medium>Post Notifications</medium> </a> 
           </li>
           <li> <a href="{{ url_for('warning') }}" class="nav-link py-3 border-bottom" style="color: black"> <i class="fa fa-triangle-exclamation" style="color: #ffcc00"></i> <medium>Post Warnings</medium> </a> 
+          </li>
+          <li> <a href="{{ url_for('add_admin') }}" class="nav-link py-3 border-bottom" style="color: black"> <i class="fa fa-user-check" style="color: rgb(0, 170, 255)"></i> <medium>Add Admin</medium> </a> 
           </li>
         </ul>
       </div>
