@@ -40,10 +40,11 @@ def item(id):
     Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."""]]
     
     if request.method == 'POST':
-        item = Item(item_id=1, price=310.99, item_desc="test desc", pic_url="./static/download.jpg")
-        db.session.add(item)
+        review = Reviews(review_id=1, item_id=2, message="testing", rating=3.4)
+        db.session.add(review)
         db.session.commit()
-        return redirect(url_for('index'))
+        flash("Your review has been posted!", 'success')
+        return redirect(url_for('item/<id>'))
 
     return(render_template('item.html', item_name=item_name, item_price=item_price, item_desc=item_desc, item_pic_path=item_pic_path, item_rating=item_rating, item_reviews=item_reviews))
 
