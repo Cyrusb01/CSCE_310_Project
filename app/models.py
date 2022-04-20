@@ -41,6 +41,7 @@ class Item(Base):
     item_id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('user.user_id'), nullable=False)
     warning_id = Column(Integer, ForeignKey('warning.warning_id'), nullable=False)
+    item_name = Column(String, nullable=True)
     price = Column(Float, nullable=False)
     item_desc = Column(String, nullable=False)
     pic_url = Column(String, nullable=False)

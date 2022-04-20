@@ -23,56 +23,77 @@
     ></script>
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
       <div class="container-fluid">
-        <a class="navbar-brand ms-4" href="#">Logo</a>
+        <a class="navbar-brand" href="{{ url_for('index') }}">Logo</a>
+
     </nav>
-    <!-- login form -->
-    <h1 class="text-center">Login</h1>
-    <div>
-      <form class="px-4 py-3" action="" method="POST">
-        <div class="mb-3">
-          <label for="exampleDropdownFormEmail1" class="form-label"
-            >Username</label
-          >
-          <input
-            type="text"
-            name="username"
-            class="form-control"
-            placeholder="Username"
-          />
-        </div>
-        <div class="mb-3">
-          <label for="exampleDropdownFormPassword1" class="form-label"
-            >Password</label
-          >
-          <input
-            type="password"
-            name="password"
-            class="form-control"
-            id="exampleDropdownFormPassword1"
-            placeholder="Password"
-          />
-        </div>
-        <div class="mb-3">
-          <div class="form-check">
-            <input
-              type="checkbox"
-              class="form-check-input"
-              id="dropdownCheck"
-            />
-            <label class="form-check-label" for="dropdownCheck">
-              Remember me
-            </label>
+    <div class="container">
+      <div class="row">
+          <div class="col-6 offset-3">
+              <div class="card bg-custom-1 mt-10">
+                  <div class="row">
+                      <div class="col m-5">
+                          <form method="POST" action="">
+                              {{ form.hidden_tag() }}
+                              <fieldset class="form-group">
+                                  <legend class="border-bottom mb-4">Login Page</legend>
+                                  <div class="form-group">
+                                      {{ form.email.label(class="form-control-label") }}
+                                      {% if form.email.errors %}
+                                      {{ form.email(class="form-control form-control-lg is-invalid") }}
+                                      <div class="invalid-feedback">
+                                          {% for error in form.email.errors %}
+                                          <span>{{ error }}</span>
+                                          {% endfor %}
+                                      </div>
+                                      {% else %}
+                                      {{ form.email(class="form-control form-control-lg") }}
+                                      {% endif %}
+                                  </div>
+                                  <div class="form-group">
+                                      {{ form.password.label(class="form-control-label") }}
+                                      {% if form.password.errors %}
+                                      {{ form.password(class="form-control form-control-lg is-invalid") }}
+                                      <div class="invalid-feedback">
+                                          {% for error in form.password.errors %}
+                                          <span>{{ error }}</span>
+                                          {% endfor %}
+                                      </div>
+                                      {% else %}
+                                      {{ form.password(class="form-control form-control-lg") }}
+                                      {% endif %}
+                                  </div>
+                              </fieldset>
+                              <div class="form-group">
+                                  {{ form.submit(class="btn btn-outline-info") }}
+                              </div>
+                              <!-- <small class="text-muted ml-2">
+                                  <a href="#">Forgot Password?</a>
+                              </small> -->
+                          </form>
+                          <div class="pt-3">
+  
+                          </div>
+                          <div class="border-top">
+                              <small class="text-muted">
+                                  Need An Account? <a class="ml-2" href="{{ url_for('register') }}">Sign Up Now</a>
+                              </small>
+                          </div>
+                          <div class="col">
+                              {% with messages = get_flashed_messages(with_categories=true) %}
+                                {% if messages %}
+                                  {% for category, message in messages %}
+                                    <div class="alert alert-{{ category }}">
+                                      {{ message }}
+                                    </div>
+                                  {% endfor %}
+                                {% endif %}
+                              {% endwith %}
+                          </div>
+                      </div>
+                  </div>
+              </div>
           </div>
-        </div>
-        <button type="submit" class="btn btn-primary">Sign in</button>
-      </form>
-      <div class="dropdown-divider"></div>
-      <a class="dropdown-item" href="{{ url_for('register') }}"
-        >Create an account? Sign up</a
-      >
-      <a class="dropdown-item" href="{{ url_for('register') }}"
-        >Forgot password</a
-      >
-    </div>
+      </div>
+  </div>
   </body>
 </html>
