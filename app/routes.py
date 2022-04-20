@@ -1,8 +1,8 @@
 from app import app, db
 from flask import render_template, url_for, flash, redirect, request
-from flask_login import login_user, login_required
+from flask_login import login_user, login_required, user_logged_in
 from app.forms import LoginForm, RegistrationForm
-from app.models import User
+from app.models import *
 
 
 # change
@@ -45,6 +45,12 @@ def item():
     Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."""], ["User Name 2", 1, """Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
     Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
     Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."""]]
+    
+    if request.method == 'POST':
+        item = Item(item_id=1, price=310.99, item_desc="test desc", pic_url="./static/download.jpg")
+        db.session.add(item)
+        db.session.commit()
+        return redirect(url_for('index'))
 
     return(render_template('item.html', **locals()))
 

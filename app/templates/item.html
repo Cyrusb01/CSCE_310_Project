@@ -315,32 +315,34 @@
         </div>
       </div>
       {% endfor %}
-      <div class="d-flex text-center justify-content-center mt-5">
-        <select class="custom-select my-auto me-3" id="reviewRating">
-          <option selected>Rating</option>
-          <option value="0">0</option>
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-        </select>
-        <div class="form-group w-50">
-          <textarea
-            class="form-control"
-            id="reviewText"
-            rows="4"
-            placeholder="Let us know what you think"
-          ></textarea>
+      <form action="POST" class="justify-contenet-center">
+        <div class="d-flex text-center justify-content-center mt-5">
+          <select class="custom-select my-auto me-3" id="reviewRating">
+            <option selected>Rating</option>
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>
+          <div class="form-group w-50">
+            <textarea
+              class="form-control"
+              id="reviewText"
+              rows="4"
+              placeholder="Let us know what you think"
+            ></textarea>
+          </div>
         </div>
-      </div>
-      <button
-        class="btn btn-primary w-25 mt-3"
-        type="button"
-        id="addreviewbutton"
-      >
-        Add Review
-      </button>
+        <button
+          class="btn btn-primary w-25 mt-3"
+          type="submit"
+          id="addreviewbutton"
+        >
+          Add Review
+        </button>
+      </form>
     </div>
   </body>
 </html>
