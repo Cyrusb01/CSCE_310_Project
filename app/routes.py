@@ -17,20 +17,7 @@ def index():
 
     data = db.engine.execute("SELECT * FROM item")
     data_dict = [{x.item_id: [x.item_name, x.item_desc, x.pic_url]} for x in data]
-    print(data_dict)
-    # parent_list = [
-    #     {'Phone1': ["Item Description", "https://m.media-amazon.com/images/I/61s0IaMcKtL._AC_SL1500_.jpg"]},
-    #     {'Phone2': ["Item Description", "./static/download.jpg"]},
-    #     {'Phone3': ["Item Description", "./static/download.jpg"]},
-    #     {'Phone4': ["Item Description", "./static/download.jpg"]},
-    #     {'Phone5': ["Item Description", "./static/download.jpg"]},
-    #     {'Phone6': ["Item Description", "./static/download.jpg"]},
-    #     {'Phone7': ["Item Description", "./static/download.jpg"]},
-    #     {'Phone8': ["Item Description", "./static/download.jpg"]},
-    #     {'Phone9': ["Item Description", "./static/download.jpg"]},
-    #     {'Phone10': ["Item Description", "./static/download.jpg"]}]
-
-
+    # print(data_dict)
     return(render_template('index.html', data=data_dict))
 
 
@@ -42,7 +29,7 @@ def shop():
 def item(id):
     data = db.engine.execute("SELECT * FROM item WHERE item_id = {}".format(id)).first()
     item_name = data.item_name
-    item_price = data.item_price
+    item_price = data.price
     item_desc = data.item_desc
     item_pic_path = data.pic_url
     item_rating = 3.7
