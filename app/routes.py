@@ -1,8 +1,24 @@
+from turtle import title
 from app import app, db
 from flask import render_template, url_for, flash, redirect, request
 from flask_login import login_user, login_required
 from app.forms import LoginForm, RegistrationForm
 from app.models import User
+
+#create post item page
+@app.route('/postItem')
+def postItem():
+    return render_template('postItem.html', title="Post an Item Here!")
+
+@app.route('/itemForm', methods=["POST"])
+def itemForm():
+    item_desc = request.form.get("item_desc")
+    price = request.form.get("price")
+    pic_url = request.form.get("pic_url")
+    is_biddable = request.form.get("is_biddable")
+
+
+    return render_template('itemForm.html')
 
 
 # change

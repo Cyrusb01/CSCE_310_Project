@@ -18,3 +18,5 @@ conda env update --file environment.yml --prune
 - Then this creates the a file under alembic/versions
 - Finally, when you run `alembic upgrade head` this will execute the changes you made and edit the Database 
 
+## running 
+python wsgi.py
