@@ -221,7 +221,7 @@
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
       <div class="container-fluid">
         <a href="{{url_for('index')}}">
-          <img class="navbar-brand ms-4" src = "static/logo.png" href="{{url_for('index')}}" width="50px"></img>
+          <img class="navbar-brand ms-4" src = "static/logo.jpeg" href="{{url_for('index')}}" width="50px"></img>
         </a>
       </div>
       <div
@@ -299,9 +299,11 @@
             </button>
           </a>
         </div>
-        <button class="btn btn-outline-primary" type="button" id="buybutton">
-          Buy Now
-        </button>
+        <form method="post" action = "{{ url_for('buy') }}"  >
+          <button class="btn btn-outline-primary" type="submit" id="buybutton">
+            Buy Now
+          </button>
+        </form>
         <p class="w-75 mt-3">{{item_desc}}</p>
       </div>
     </div>

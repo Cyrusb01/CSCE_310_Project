@@ -63,8 +63,15 @@ def item(id_):
             flash('Bid Placed!')
 
 
+
             
     return(render_template('item.html', item_name=item_name, item_price=item_price, item_desc=item_desc, item_pic_path=item_pic_path, item_rating=item_rating, item_reviews=item_reviews, top_bid = top_bid))
+
+
+@app.route('/buy', methods=['GET', 'POST'])
+def buy():
+    #Add this to the database
+    return render_template('purchased.html')
 
 
 @app.route("/register", methods=['GET', 'POST'])
@@ -83,8 +90,6 @@ def register():
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
-    # if current_user.is_authenticated:
-    #     return redirect(url_for('dashboard'))
     form = LoginForm()
     if form.validate_on_submit():
         user = db.session.query(User).filter_by(email=form.email.data, password=form.password.data).first()
