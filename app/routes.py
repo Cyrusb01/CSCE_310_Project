@@ -35,12 +35,12 @@ def shop():
     return(render_template('shop.html'))
 
 
-@app.route('/item/<id>', methods=['GET', 'POST'])
-def item(id):
-    item = db.engine.execute(f"SELECT * FROM item WHERE item_id = {id}").first()
+@app.route('/item/<id_>', methods=['GET', 'POST'])
+def item(id_):
+    item = db.engine.execute(f"SELECT * FROM item WHERE item_id = {id_}").first()
 
     item_reviews = []
-    reviews = db.engine.execute(f"SELECT * FROM review WHERE item_id = {id}")
+    reviews = db.engine.execute(f"SELECT * FROM review WHERE item_id = {id_}")
 
     for row in reviews:
         review_dict = dict(row._mapping)
@@ -56,12 +56,12 @@ def item(id):
         item_rating /= len(item_reviews)
     
     if request.method == 'POST':
-        review = Reviews(item_id=id, user_id=1, message=request.form['reviewText'], rating=request.form['reviewRating'])
+        review = Reviews(item_id=id_, user_id=1, message=request.form['reviewText'], rating=request.form['reviewRating'])
         db.session.add(review)
         db.session.commit()
         print("Added Review")
         flash("Your review has been posted!", 'success')
-        return redirect(url_for('item', id=id))
+        return redirect(url_for('item', id_=id_))
       
     bid_data = db.engine.execute("SELECT * FROM bidding WHERE item_id = {}".format(id_)).first()
     top_bid = bid_data.top_bid if bid_data else 0
@@ -84,6 +84,7 @@ def item(id):
             con.commit()
             # flash('Bid Placed!')
 
+    return render_template("item.html", item=item, item_reviews=item_reviews, item_rating=item_rating, top_bid=top_bid)
 
 
 @app.route('/buy', methods=['GET', 'POST'])
