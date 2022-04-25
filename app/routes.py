@@ -19,10 +19,11 @@ def index():
     data = db.engine.execute("SELECT * FROM item")
     data_dict = [{x.item_id: [x.item_name, x.item_desc, x.pic_url]} for x in data]
     # print(data_dict)
-    cur.execute("SELECT * FROM notification WHERE [notification_id]=(SELECT MAX([notification_id]) FROM notification)")
-    notif = cur.fetchone()
-    print(notif[2])
-    con.commit()
+    # cur.execute("SELECT * FROM notification WHERE [notification_id]=(SELECT MAX([notification_id]) FROM notification)")
+    # notif = cur.fetchone()
+    # print(notif)
+    # con.commit()
+    notif = ["some", "some", "some", 'somet']
     
     return render_template('index.html', data=data_dict, notif=notif[2], date=notif[3])
 
@@ -61,11 +62,11 @@ def item(id_):
             db.session.add(bid)
             db.session.commit()
             print("Committed")
-            flash('Bid Placed!')
+            # flash('Bid Placed!')
         else:
             cur.execute('UPDATE bidding SET top_bid = ?, bid_expire_date = ? WHERE item_id = ?', (top_bid, now, id_))
             con.commit()
-            flash('Bid Placed!')
+            # flash('Bid Placed!')
 
 
 
