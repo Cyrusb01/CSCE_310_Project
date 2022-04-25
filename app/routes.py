@@ -1,9 +1,11 @@
 from app import app, db
 from flask import render_template, url_for, flash, redirect, request
-from flask_login import login_user, login_required
+from flask_login import login_user, login_required, user_logged_in
 from app.forms import LoginForm, RegistrationForm
-from app.models import User, Bidding, Item, Notification, Warnings
+
+from app.models import User, Bidding, Item, Notification, Warnings, Reviews
 from datetime import datetime, timedelta
+
 
 import sqlite3
 con = sqlite3.connect('data.db', check_same_thread=False)
@@ -32,23 +34,37 @@ def index():
 def shop():
     return(render_template('shop.html'))
 
-@app.route('/item/<id_>' , methods=['GET', 'POST'])
-def item(id_):
-    data = db.engine.execute("SELECT * FROM item WHERE item_id = {}".format(id_)).first()
-    item_name = data.item_name.title()
-    item_price = data.price
-    item_desc = data.item_desc
-    item_pic_path = data.pic_url
-    item_rating = 3.7
-    item_reviews = [["User Name", 3, """Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."""], ["User Name 1", 5, """Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."""], ["User Name 2", 1, """Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."""]]
-    print(id_)
+
+@app.route('/item/<id>', methods=['GET', 'POST'])
+def item(id):
+    item = db.engine.execute(f"SELECT * FROM item WHERE item_id = {id}").first()
+
+    item_reviews = []
+    reviews = db.engine.execute(f"SELECT * FROM review WHERE item_id = {id}")
+
+    for row in reviews:
+        review_dict = dict(row._mapping)
+        review_dict['user_name'] = str(db.engine.execute(f"SELECT username FROM user WHERE user_id = {review_dict['user_id']}").first())[2:-3]
+        item_reviews.append(review_dict)
+
+    # Calc rating
+    item_rating = 0
+    for review in item_reviews:
+        item_rating += review['rating']
+    
+    if item_rating != 0:
+        item_rating /= len(item_reviews)
+    
+    if request.method == 'POST':
+        review = Reviews(item_id=id, user_id=1, message=request.form['reviewText'], rating=request.form['reviewRating'])
+        db.session.add(review)
+        db.session.commit()
+        print("Added Review")
+        flash("Your review has been posted!", 'success')
+        return redirect(url_for('item', id=id))
+      
     bid_data = db.engine.execute("SELECT * FROM bidding WHERE item_id = {}".format(id_)).first()
     top_bid = bid_data.top_bid if bid_data else 0
-
     if request.method == 'POST':
         print("POST METHOD")
         top_bid = float(request.form['place_bid'])
@@ -70,14 +86,11 @@ def item(id_):
 
 
 
-            
-    return(render_template('item.html', item_name=item_name, item_price=item_price, item_desc=item_desc, item_pic_path=item_pic_path, item_rating=item_rating, item_reviews=item_reviews, top_bid = top_bid))
-
-
 @app.route('/buy', methods=['GET', 'POST'])
 def buy():
     #Add this to the database
     return render_template('purchased.html')
+
 
 
 @app.route("/register", methods=['GET', 'POST'])
