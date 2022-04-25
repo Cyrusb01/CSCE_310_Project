@@ -1,0 +1,64 @@
+/* .nav-link {
+  border-radius: 0px !important;
+  transition: all 0.5s;
+  width: 100px;
+  display: flex;
+  flex-direction: column;
+} */
+
+/* admin template */
+.nav-link:hover {
+  background-color: #52525240 !important;
+}
+
+.nav-link .fa {
+  transition: all 1s;
+  font-size: 20px;
+}
+
+.nav-link:hover .fa {
+  transform: rotate(360deg);
+}
+
+/* Banned User */
+tbody {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+tr {
+  width: 80%;
+  display: table;
+  table-layout: fixed;
+  margin: 0px auto;
+}
+
+.table {
+  margin: 0px auto;
+  float: none;
+}
+
+.custom {
+  margin-left: 50px;
+  margin-bottom: 15px;
+}
+
+._flex {
+  display: inline-block;
+  flex-direction: row;
+}
+
+.hr-theme-slash-2 {
+  display: flex;
+}
+.hr-line {
+  width: 100%;
+  position: relative;
+  margin: 15px;
+  border-bottom: 1px solid #000;
+}
+.hr-icon {
+  position: relative;
+  top: 3px;
+  color: #ff0000;
+}

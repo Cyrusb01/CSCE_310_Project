@@ -1,0 +1,77 @@
+{% extends 'adminTemplate.html'%} {% block title %} Admin {% endblock %} {%block
+content %}
+<h1>{% block admin_title %} Welcome, Admin {% endblock %}</h1>
+<p>Who does not want to have a power?</p>
+<div class="row mt-4">
+  <div class="col-lg-6 col-md-6 mb-4">
+    <h5 class="custom">Current Admins List</h5>
+    <table class="table table-striped">
+      <thead class="table-success">
+        <tr>
+          <th>Admin Username</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for admin in admin_list %}
+        <tr>
+          <td>{{admin[1]}}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <!-- Right column layout -->
+
+  <div class="col-lg-6 col-md-6 mt-4 mb-4">
+    {% for message in get_flashed_messages() %}
+    <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+    <div class="hr-theme-slash-2">
+      <div class="hr-line"></div>
+      <div class="hr-icon">
+        <i class="fa fa-user-check" style="color: green"></i>
+      </div>
+      <div class="hr-line"></div>
+    </div>
+
+    <div class="card mb-3" style="border: none">
+      <div class="position-relative mx-3 my-4 bg-transparent">
+        <!-- add admin form -->
+        <h2 class="text-center">Add Admin</h2>
+        <form class="px-4 py-3" action="add_admin" method="POST">
+          <label for="exampleDropdownFormEmail1" class="form-label"
+            >Username</label
+          >
+          <div class="mb-3 input-group">
+            <input type="text" name="username" class="form-control" />
+            <button type="submit" class="btn btn-success">Add</button>
+          </div>
+        </form>
+        <!-- end add admin form -->
+      </div>
+    </div>
+    <div class="hr-theme-slash-2">
+      <div class="hr-line"></div>
+      <div class="hr-icon">
+        <i class="fa fa-user-slash" style="color: red"></i>
+      </div>
+      <div class="hr-line"></div>
+    </div>
+    <div class="card mb-3" style="border: none">
+      <div class="position-relative mx-3 my-4 bg-transparent">
+        <!-- Delete ban user form -->
+        <h2 class="text-center">Delete Admin</h2>
+        <form class="px-4 py-3" action="add_admin" method="POST">
+          <label for="exampleDropdownFormEmail1" class="form-label"
+            >Username</label
+          >
+          <div class="mb-3 input-group">
+            <input type="text" name="username_del" class="form-control" />
+            <button type="submit" class="btn btn-danger">Delete</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

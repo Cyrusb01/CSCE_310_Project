@@ -220,7 +220,9 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
       <div class="container-fluid">
-        <a class="navbar-brand ms-3" href="{{url_for('index')}}">Logo</a>
+        <a href="{{url_for('index')}}">
+          <img class="navbar-brand ms-4" src = "static/logo.jpeg" href="{{url_for('index')}}" width="50px"></img>
+        </a>
       </div>
       <div
         class="collapse navbar-collapse col-9 me-4"
@@ -267,14 +269,25 @@
       <div class="col-6 justify-content-center">
         <img
           src="{{item_pic_path}}"
-          class="img-thumbnail w-75 mx-auto d-block"
           alt="item picture"
+          width="80%"
         />
       </div>
       <!-- Item Text -->
       <div class="col-6">
         <h1 class="display-5">{{item_name}}</h1>
         <h4 class="">${{item_price}}</h4>
+        <h5 class="">Top Bid: {{top_bid}} </h5>
+
+        <div class = "col-6">
+          <form class="" method="POST">
+          <div class="mb-4 input-group">
+            <input type="text" name="place_bid" class="form-control"/>
+            <button type="submit" class="btn btn-primary">Place Bid</button>
+          </form>
+          </div>
+        </div>
+
         <div class="d-flex mb-2">
           <i class="" data-star="{{item_rating}}"></i>
           <a href="#review-section">
@@ -287,9 +300,11 @@
             </button>
           </a>
         </div>
-        <button class="btn btn-outline-primary" type="button" id="buybutton">
-          Buy Now
-        </button>
+        <form method="post" action = "{{ url_for('buy') }}"  >
+          <button class="btn btn-outline-primary" type="submit" id="buybutton">
+            Buy Now
+          </button>
+        </form>
         <p class="w-75 mt-3">{{item_desc}}</p>
       </div>
     </div>

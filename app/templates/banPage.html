@@ -13,13 +13,7 @@
       crossorigin="anonymous"
     />
 
-    <!-- Font Awesome -->
-    <script
-      src="https://kit.fontawesome.com/ccae617d2b.js"
-      crossorigin="anonymous"
-    ></script>
-
-    <title>Project</title>
+    <title>Ban_page</title>
   </head>
   <body>
     <script
@@ -34,7 +28,7 @@
         <a class="navbar-brand ms-4" href="{{url_for('index')}}">Logo</a>
       </div>
       <div
-        class="collapse navbar-collapse col-9 me-5"
+        class="collapse navbar-collapse col-9 me-4"
         id="navbarSupportedContent"
       >
         <ul class="navbar-nav ms-auto">
@@ -42,40 +36,15 @@
             <a
               class="nav-link btn btn-outline-secondary"
               href="{{ url_for('login') }}"
-              >Sign In / Sign Up</a
-            >
-            <a
-              class="nav-link btn btn-outline-secondary"
-              href="{{ url_for('postItem') }}"
-              >Post an Item</a
-            >
+              >Logout
+            </a>
           </li>
         </ul>
       </div>
     </nav>
 
-    <!-- Search Bar -->
-    <div class="row mt-5 justify-content-center">
-      <div class="search-bar col-12 d-flex justify-content-center">
-        <div class="input-group">
-          <input
-            type="search"
-            class="form-control"
-            id="searchbar"
-            placeholder="Search"
-          />
-          <button
-            class="btn btn-outline-secondary"
-            type="button"
-            id="searchbutton"
-          >
-            Search
-            <!-- <i class="search-icon fa-solid fa-magnifying-glass"></i> -->
-          </button>
-        </div>
-      </div>
+    <div class="position-absolute top-50 start-50 translate-middle">
+      <h3>You currently have no access to the webpage</h3>
     </div>
-
-    {% block content %} {% endblock %}
   </body>
 </html>

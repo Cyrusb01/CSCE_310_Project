@@ -25,27 +25,41 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
       <div class="container-fluid">
-        <a class="navbar-brand ms-3" href="{{url_for('index')}}">Logo</a>
+        <a href="{{url_for('index')}}">
+          <img class="navbar-brand ms-4" src = "static/logo.png" href="{{url_for('index')}}" width="50px"></img>
+        </a>
+        
       </div>
       <div
         class="collapse navbar-collapse col-9 me-4"
         id="navbarSupportedContent"
       >
         <ul class="navbar-nav ms-auto">
-          <li class="nav-item">
+          <li class="nav-item me-2"> 
+            <a
+              class="nav-link btn btn-outline-secondary"
+              href="{{ url_for('admin') }}"
+              >Admin
+            </a>
+          </li>
+
+
+          <li class="nav-item"> 
             <a
               class="nav-link btn btn-outline-secondary"
               href="{{ url_for('login') }}"
-              >Sign In / Sign Up</a
-            >
-          </li>
+              >Sign In / Sign Up
+            </a>
+          </li> 
+        
           <li class="nav-item">
-            <a
-              class="nav-link btn btn-outline-secondary"
-              href="{{ url_for('postItem') }}"
-              >Post_Item</a
-            >
-          </li>
+              <a
+                class="nav-link btn btn-outline-secondary"
+                href="{{ url_for('postItem') }}"
+                >Post_Item
+              </a>
+            </li>
+
         </ul>
       </div>
     </nav>
@@ -93,10 +107,10 @@
         </div>
       </div>
     </div>
-
+    <!-- Notification -->
       <div class="row mt-5 mx-auto">
         <div class="col-12 d-flex justify-content-center">
-          <p>Notification: Happy Spring</p>
+          <p>Notification: {{notif}}
         </div>
       </div>
 
@@ -105,11 +119,11 @@
           {% for dict_item in data %}
             {% for key, value in dict_item.items() %}
               <div class="col-3 offset-1 mb-5">
-                <a href="{{url_for('item')}}">
-                  <img src= {{value[1]}} alt="phone" />
+                <a href="{{url_for('item', id_ = key )}}">
+                  <img src= {{value[2]}} alt="phone" height="200" width="200" />
                 </a>
-                <h1>{{key}}</h1>
-                <p>{{value[0]}}</p>
+                <h1>{{value[0]}}</h1>
+                <p>{{value[1]}}</p>
               </div>
             {% endfor %}
           {% endfor %}
