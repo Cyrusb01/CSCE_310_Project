@@ -23,7 +23,7 @@ cur.execute("INSERT INTO review VALUES (1, 2, 4, 'Lorem ipsum dolor sit amet, co
 cur.execute("INSERT INTO review VALUES (2, 2, 4, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.', 5)")
 cur.execute("INSERT INTO review VALUES (3, 2, 4, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.', 1)")
 
-
+cur.execute("INSERT INTO notification VALUES (1, 1,'test notification', '2022-24-4 20:16:00')")
 # Insert a few rows of data
 # cur.execute("INSERT INTO item VALUES ('1', '1', 'My first blog' ,'Some content', 1)")
 # cur.execute("INSERT INTO blogs VALUES ('private-blog', '2021-03-07', 'Secret blog' ,'This is a secret', 0)")

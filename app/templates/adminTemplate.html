@@ -52,7 +52,9 @@
   </head>
 
   <body>
-  
+    {% for message in get_flashed_messages() %}
+    <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
   <div class="container-fluid mt-5">
     <div class="row ">
       <!-- Sidebar -->
@@ -74,9 +76,13 @@
 
       <!-- content -->
       <div class="col-10 mt-2 px-5">
+        <div class='container'>
+        
+        </div>
         {% block content %}
         {% block admin_title %}
         {% endblock %} 
+        
         {% endblock %}  
       </div>
       <!-- content -->
