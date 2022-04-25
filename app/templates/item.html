@@ -14,10 +14,10 @@
     />
 
     <!-- Font Awesome -->
-    <script
+    <!-- <script
       src="https://kit.fontawesome.com/ccae617d2b.js"
       crossorigin="anonymous"
-    ></script>
+    ></script> -->
 
     <style>
       /* Rating stars */
@@ -267,15 +267,15 @@
       <!-- Item Picture -->
       <div class="col-6 justify-content-center">
         <img
-          src="{{item_pic_path}}"
+          src="{{item.pic_url}}"
           class="img-thumbnail w-75 mx-auto d-block"
           alt="item picture"
         />
       </div>
       <!-- Item Text -->
       <div class="col-6">
-        <h1 class="display-5">{{item_name}}</h1>
-        <h4 class="">${{item_price}}</h4>
+        <h1 class="display-5">{{item.item_name}}</h1>
+        <h4 class="">${{item.price}}</h4>
         <div class="d-flex mb-2">
           <i class="" data-star="{{item_rating}}"></i>
           <a href="#review-section">
@@ -291,7 +291,7 @@
         <button class="btn btn-outline-primary" type="button" id="buybutton">
           Buy Now
         </button>
-        <p class="w-75 mt-3">{{item_desc}}</p>
+        <p class="w-75 mt-3">{{item.item_desc}}</p>
       </div>
     </div>
 
@@ -304,22 +304,23 @@
       <div class="row">
         <div class="card mb-3 mx-auto w-75">
           <div class="row g-0">
-            <div class="col-md-4 my-auto text-center">
-              <p class="fs-5 mb-0">{{review[0]}}</p>
-              <i class="" data-star="{{review[1]}}"></i>
-            </div>
+              <div class="col-md-4 my-auto text-center">
+                <p class="fs-5 mb-0">{{review['user_name']}}</p>
+                <i class="" data-star="{{review['rating']}}"></i>
+              </div>
             <div class="col-md-8">
               <div class="card-body">
-                <p class="card-text my-4">{{review[2]}}</p>
+                <p class="card-text my-4">{{review['message']}}</p>
               </div>
             </div>
           </div>
         </div>
       </div>
       {% endfor %}
-      <form action="POST" class="justify-contenet-center">
-        <div class="d-flex text-center justify-content-center mt-5">
-          <select class="custom-select my-auto me-3" id="reviewRating">
+      <form method="POST" class="">
+        <h3 class="text-center mt-5">Leave a Review</h3>
+        <div class="d-flex text-center justify-content-center">
+          <select class="custom-select my-auto me-3" name="reviewRating">
             <option selected>Rating</option>
             <option value="0">0</option>
             <option value="1">1</option>
@@ -331,19 +332,21 @@
           <div class="form-group w-50">
             <textarea
               class="form-control"
-              id="reviewText"
+              name="reviewText"
               rows="4"
               placeholder="Let us know what you think"
             ></textarea>
           </div>
         </div>
-        <button
-          class="btn btn-primary w-25 mt-3"
-          type="submit"
-          id="addreviewbutton"
-        >
-          Add Review
-        </button>
+        <div class="row">
+          <button
+            class="btn btn-primary w-25 mt-3 mx-auto"
+            type="submit"
+            id="addreviewbutton"
+          >
+            Add Review
+          </button>
+        </div>
       </form>
     </div>
   </body>

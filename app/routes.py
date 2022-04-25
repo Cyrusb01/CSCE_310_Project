@@ -25,28 +25,35 @@ def index():
 def shop():
     return(render_template('shop.html'))
 
-@app.route('/item/<id>')
+@app.route('/item/<id>', methods=['GET', 'POST'])
 def item(id):
-    data = db.engine.execute("SELECT * FROM item WHERE item_id = {}".format(id)).first()
-    item_name = data.item_name
-    item_price = data.price
-    item_desc = data.item_desc
-    item_pic_path = data.pic_url
-    item_rating = 3.7
-    item_reviews = [["User Name", 3, """Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."""], ["User Name 1", 5, """Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."""], ["User Name 2", 1, """Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."""]]
+    item = db.engine.execute(f"SELECT * FROM item WHERE item_id = {id}").first()
+
+    item_reviews = []
+    reviews = db.engine.execute(f"SELECT * FROM review WHERE item_id = {id}")
+
+    for row in reviews:
+        review_dict = dict(row._mapping)
+        review_dict['user_name'] = str(db.engine.execute(f"SELECT username FROM user WHERE user_id = {review_dict['user_id']}").first())[2:-3]
+        item_reviews.append(review_dict)
+
+    # Calc rating
+    item_rating = 0
+    for review in item_reviews:
+        item_rating += review['rating']
+    
+    if item_rating != 0:
+        item_rating /= len(item_reviews)
     
     if request.method == 'POST':
-        review = Reviews(review_id=1, item_id=2, message="testing", rating=3.4)
+        review = Reviews(item_id=id, user_id=1, message=request.form['reviewText'], rating=request.form['reviewRating'])
         db.session.add(review)
         db.session.commit()
+        print("Added Review")
         flash("Your review has been posted!", 'success')
-        return redirect(url_for('item/<id>'))
+        return redirect(url_for('item', id=id))
 
-    return(render_template('item.html', item_name=item_name, item_price=item_price, item_desc=item_desc, item_pic_path=item_pic_path, item_rating=item_rating, item_reviews=item_reviews))
+    return render_template('item.html', item=item, item_reviews=item_reviews, item_rating=item_rating)
 
 
 @app.route("/register", methods=['GET', 'POST'])
