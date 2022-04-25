@@ -19,7 +19,7 @@ cur.execute("INSERT INTO item VALUES (5, 2, 2, 21, 'Car USB', 'https://cimg2.ibs
 cur.execute("INSERT INTO item VALUES (6, 2, 2, 21, 'Tree in a dome', 'https://noveltystreet.com/wp-content/uploads/2017/03/Vert-Sauvage-Forest-Terrarium-Of-Artificial-Plants-Pet-Plant.jpg', 1, 'Tree')")
 cur.execute("INSERT INTO item VALUES (7, 2, 2, 45, 'Fancy Car Fob', 'https://hip2save.com/wp-content/uploads/2021/12/car-key-covers.jpg?resize=1200%2C990&strip=all', 1, 'Car Fobs')")
 
-
+cur.execute("INSERT INTO notification VALUES (1, 1,'test notification', '2022-24-4 20:16:00')")
 # Insert a few rows of data
 # cur.execute("INSERT INTO item VALUES ('1', '1', 'My first blog' ,'Some content', 1)")
 # cur.execute("INSERT INTO blogs VALUES ('private-blog', '2021-03-07', 'Secret blog' ,'This is a secret', 0)")

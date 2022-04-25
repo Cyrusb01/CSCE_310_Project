@@ -1,10 +1,7 @@
 {% extends 'adminTemplate.html'%} {% block title %} notification {% endblock %}
 {%block content %}
 <h1>{% block admin_title %} Manage Notification {% endblock %}</h1>
-<p>
-  thop hugyufrystersr gugkjhh hop hugyufrystersr gugkj hop hugyufrystersr gugkj
-  hop hugyufrystersr gugkj hop hugyufrystersr gugkj
-</p>
+<p>Notify everyone what's going on ..</p>
 <div class="row mt-4">
   <div class="col-lg-4 col-md-6 mt-4 mb-4">
     <div class="card z-index-2">
@@ -14,15 +11,15 @@
         <!-- Add Form -->
         <h3 class="text-center">Add Notification</h3>
         <div>
-          <form class="px-4 py-3" action="" method="POST">
+          <form class="px-4 py-3" action="notification" method="POST">
             <div class="mb-3">
               <label for="exampleDropdownFormEmail1" class="form-label"
-                >Title</label
+                >Notification</label
               >
 
               <input
                 type="text"
-                name="title"
+                name="notif_create"
                 class="form-control"
                 placeholder="Title"
               />
@@ -38,7 +35,7 @@
                 id="exampleDropdownFormPassword1"
                 placeholder="Description"
               />
-            </div> -->
+            </div>
             <div class="mb-3">
               <label for="exampleFormControlTextarea1" class="form-label"
                 >Description</label
@@ -46,15 +43,27 @@
               <textarea
                 class="form-control"
                 id="exampleFormControlTextarea1"
+                name="Desc_create"
                 rows="3"
               ></textarea>
             </div>
+            <div class="mb-3">
+              <label for="exampleFormControlTextarea3" class="form-label"
+                >Date made</label
+              >
+              <textarea
+                class="form-control"
+                id="exampleFormControlTextarea1"
+                rows="3"
+              ></textarea>
+            </div> -->
             <button type="submit" class="btn btn-primary">Add</button>
           </form>
         </div>
       </div>
     </div>
   </div>
+  <!-- Update Notification -->
   <div class="col-lg-4 col-md-6 mt-4 mb-4">
     <div class="card z-index-2">
       <div
@@ -63,19 +72,19 @@
         <!-- Update Form -->
         <h3 class="text-center">Update Notification</h3>
         <div>
-          <form class="px-4 py-3" action="" method="POST">
+          <form class="px-4 py-3" action="notification" method="POST">
             <div class="mb-3">
               <label for="exampleDropdownFormEmail1" class="form-label"
-                >Title</label
+                >Description</label
               >
               <input
                 type="text"
-                name="update_title"
+                name="notif_update"
                 class="form-control"
-                placeholder="title"
+                placeholder="Description"
               />
             </div>
-            <div class="mb-3">
+            <!-- <div class="mb-3">
               <label for="exampleFormControlTextarea2" class="form-label"
                 >Description</label
               >
@@ -85,6 +94,16 @@
                 rows="3"
               ></textarea>
             </div>
+            <div class="mb-3">
+              <label for="exampleFormControlTextarea3" class="form-label"
+                >Date made</label
+              >
+              <textarea
+                class="form-control"
+                id="exampleFormControlTextarea1"
+                rows="3"
+              ></textarea>
+            </div>-->
             <button type="submit" class="btn btn-primary">Update</button>
           </form>
         </div>
@@ -97,10 +116,10 @@
         class="card-header p-0 position-relative mt-n4 mx-3 my-4 z-index-2 bg-transparent"
       >
         <!-- Delete Form -->
-        <h3 class="text-center">Delete Notification</h3>
+        <h3 class="text-center">Delete Latest Notification</h3>
         <div>
-          <form class="px-4 py-3" action="" method="POST">
-            <div class="mb-3">
+          <form class="px-4 py-3" action="notification" method="POST">
+            <!--<div class="mb-3">
               <label for="exampleDropdownFormEmail1" class="form-label"
                 >Title</label
               >
@@ -123,12 +142,38 @@
                 id="exampleDropdownFormPassword1"
                 placeholder="id"
               />
-            </div>
-            <button type="submit" class="btn btn-primary">Delete</button>
+            </div>-->
+            <center>
+              <input
+                type="submit"
+                class="btn btn-primary"
+                value="Delete"
+                name="delete"
+              />
+            </center>
           </form>
         </div>
       </div>
     </div>
   </div>
+</div>
+<div class="row mt-2">
+  <h5>Current Notification List</h5>
+  <table class="table table-striped mt-2">
+    <thead class="table-danger">
+      <tr>
+        <th>Description</th>
+        <th>Admin</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for notif in notif_list %}
+      <tr>
+        <td>{{notif[1]}}</td>
+        <td>{{notif[2]}}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 </div>
 {% endblock %}

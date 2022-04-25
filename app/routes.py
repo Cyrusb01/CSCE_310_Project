@@ -2,7 +2,8 @@ from app import app, db
 from flask import render_template, url_for, flash, redirect, request
 from flask_login import login_user, login_required
 from app.forms import LoginForm, RegistrationForm
-from app.models import User
+from app.models import User, Bidding, Item, Notification, Warnings
+from datetime import datetime, timedelta
 
 import sqlite3
 con = sqlite3.connect('data.db', check_same_thread=False)
@@ -18,7 +19,12 @@ def index():
     data = db.engine.execute("SELECT * FROM item")
     data_dict = [{x.item_id: [x.item_name, x.item_desc, x.pic_url]} for x in data]
     # print(data_dict)
-    return(render_template('index.html', data=data_dict))
+    cur.execute("SELECT * FROM notification WHERE [notification_id]=(SELECT MAX([notification_id]) FROM notification)")
+    notif = cur.fetchone()
+    print(notif[2])
+    con.commit()
+    
+    return render_template('index.html', data=data_dict, notif=notif[2], date=notif[3])
 
 
 @app.route('/shop')
@@ -64,7 +70,10 @@ def login():
     if form.validate_on_submit():
         user = db.session.query(User).filter_by(email=form.email.data, password=form.password.data).first()
         if user:
-            return redirect(url_for('index'))
+            if user.is_banned:  # If this user is banned
+                return redirect(url_for('ban_page'))
+            else:
+                return redirect(url_for('index'))
         else:
             flash('Login Unsuccessful. Please check email and password', 'danger')
     return render_template('login.html', title='Login', form=form)
@@ -114,7 +123,37 @@ def ban_users():
 
 @app.route("/notification", methods=['GET', 'POST'])
 def notification():
-    return render_template('notification.html', title='notification')
+
+    now = datetime.now() + timedelta(hours=24)
+    if request.method == 'POST':
+        # create notification
+        if 'notif_create' in request.form: 
+            notif_create = request.form['notif_create']
+            notif = Notification(user_id=1, notif_desc=notif_create, date_made = now)
+            db.session.add(notif)
+            db.session.commit()
+            flash("notification added")
+            redirect (url_for('notification'))
+            print("test1")
+        # Update Notification
+        elif 'notif_update' in request.form:
+            print("test")
+            notif_update = request.form['notif_update']
+            cur.execute('UPDATE notification SET (notif_desc, date_made)=(?,?) WHERE [notification_id]=(SELECT MAX([notification_id]) FROM notification)', (notif_update, now))
+            con.commit()
+            flash("notification updated")
+            redirect (url_for('notification'))
+        # Delete Notification
+        elif 'delete' in request.form:
+            print("test delete")
+            cur.execute('DELETE FROM notification WHERE [notification_id]=(SELECT MAX([notification_id]) FROM notification)')
+            con.commit()
+            flash("notification deleted")
+            redirect (url_for('notification'))
+    # Display notification      
+    notif_list = cur.execute("SELECT notification.notification_id, notification.notif_desc, user.username FROM notification INNER JOIN user ON notification.user_id=user.user_id").fetchall()
+    con.commit() 
+    return render_template('notification.html', title='notification', notif_list=notif_list)
 
 @app.route("/warning", methods=['GET', 'POST'])
 def warning():
@@ -159,3 +198,7 @@ def add_admin():
         admin = [('dummy','Currently have no admins')]     
     con.commit() 
     return render_template('addAdmin.html', title='add_admin', admin_list = admin)
+
+@app.route("/ban_page", methods=['GET', 'POST'])
+def ban_page():
+    return render_template('banPage.html', title='ban_page')
