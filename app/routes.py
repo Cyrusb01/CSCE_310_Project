@@ -43,7 +43,7 @@ def index():
             return redirect(url_for('index_admin'))
     
     data = db.engine.execute("SELECT * FROM item")
-    data_dict = [{x.item_id: [x.item_name, x.item_desc, x.pic_url]} for x in data]
+    data_dict = [{x.item_id: [x.item_name.title(), x.item_desc, x.pic_url]} for x in data]
     # print(data_dict)
     # cur.execute("SELECT * FROM notification WHERE [notification_id]=(SELECT MAX([notification_id]) FROM notification)")
     # notif = cur.fetchone()
@@ -61,7 +61,7 @@ def index_admin():
     """
 
     data = db.engine.execute("SELECT * FROM item")
-    data_dict = [{x.item_id: [x.item_name, x.item_desc, x.pic_url]} for x in data]
+    data_dict = [{x.item_id: [x.item_name.title(), x.item_desc, x.pic_url]} for x in data]
     # print(data_dict)
     # cur.execute("SELECT * FROM notification WHERE [notification_id]=(SELECT MAX([notification_id]) FROM notification)")
     # notif = cur.fetchone()
