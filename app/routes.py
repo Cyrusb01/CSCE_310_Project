@@ -10,6 +10,7 @@ from datetime import datetime, timedelta
 
 #create post item page
 @app.route('/postItem')
+@login_required
 def postItem():
     return render_template('postItem.html', title="Post an Item Here!")
 
@@ -46,7 +47,7 @@ def index():
     # con.commit()
     notif = ["some", "some", "some", 'somet']
     
-    return render_template('index.html', data=data_dict, notif=notif[2], date=notif[3])
+    return render_template('index.html', data=data_dict, notif=notif[2], date=notif[3], user=current_user)
 
 
 @app.route('/shop')
@@ -80,7 +81,6 @@ def item(id_):
             db.session.add(review)
             db.session.commit()
             print("Added Review")
-            flash("Your review has been posted!", 'success')
             return redirect(url_for('item', id_=id_))
       
     bid_data = db.engine.execute("SELECT * FROM bidding WHERE item_id = {}".format(id_)).first()
@@ -137,7 +137,7 @@ def login():
             if user.is_banned:  # If this user is banned
                 return redirect(url_for('ban_page'))
             else:
-                login_user(user)
+                login_user(user, remember=True)
                 return redirect(url_for('index'))
         else:
             flash('Login Unsuccessful. Please check email and password', 'danger')
