@@ -1,7 +1,7 @@
 from turtle import title
 from app import app, db
 from flask import render_template, url_for, flash, redirect, request
-from flask_login import login_user, login_required, user_logged_in, current_user
+from flask_login import login_user, login_required, user_logged_in, current_user, logout_user
 from app.forms import LoginForm, RegistrationForm
 
 
@@ -172,6 +172,13 @@ def login():
         else:
             flash('Login Unsuccessful. Please check email and password', 'danger')
     return render_template('login.html', title='Login', form=form)
+
+@app.route("/delete", methods=['GET', 'POST'])
+def delete():
+    if current_user.is_authenticated:
+        delte = cur.execute('DELETE FROM user WHERE user_id=?;',(current_user.user_id))
+
+    return redirect(url_for("index"))
 
 # TODO: polish admin homepage fix admin button 
 @app.route("/admin", methods=['GET', 'POST'])
