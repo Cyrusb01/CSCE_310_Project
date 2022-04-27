@@ -30,9 +30,7 @@
         </a>
         
       </div>
-      {% if user.username %}
-      <h5 class="text-nowrap text-center" style="color: white">Welcome, {{user.username}}</h5>
-      {% endif %}
+      <p>{{user.username}}</p>
       <div
         class="collapse navbar-collapse col-9 me-4"
         id="navbarSupportedContent"
@@ -47,7 +45,7 @@
           </li>
 
 
-          <li class="nav-item me-2"> 
+          <li class="nav-item"> 
             <a
               class="nav-link btn btn-outline-secondary"
               href="{{ url_for('login') }}"
@@ -55,11 +53,11 @@
             </a>
           </li> 
         
-          <li class="nav-item ">
+          <li class="nav-item">
               <a
                 class="nav-link btn btn-outline-secondary"
                 href="{{ url_for('postItem') }}"
-                >Post Item
+                >Post_Item
               </a>
             </li>
 

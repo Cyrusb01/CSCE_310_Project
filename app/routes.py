@@ -49,6 +49,25 @@ def index():
     
     return render_template('index.html', data=data_dict, notif=notif[2], date=notif[3], user=current_user)
 
+@app.route('/admin')
+def index_admin():
+    """
+    This route should be the main page for admins, 
+    grid of all items
+    """
+
+    data = db.engine.execute("SELECT * FROM item")
+    data_dict = [{x.item_id: [x.item_name, x.item_desc, x.pic_url]} for x in data]
+    # print(data_dict)
+    # cur.execute("SELECT * FROM notification WHERE [notification_id]=(SELECT MAX([notification_id]) FROM notification)")
+    # notif = cur.fetchone()
+    # print(notif)
+    # con.commit()
+    notif = ["some", "some", "some", 'somet']
+    
+    return render_template('index_admin.html', data=data_dict, notif=notif[2], date=notif[3], user=current_user)
+
+
 
 @app.route('/shop')
 def shop():
@@ -56,6 +75,7 @@ def shop():
 
 
 @app.route('/item/<id_>', methods=['GET', 'POST'])
+@login_required
 def item(id_):
     item = db.engine.execute(f"SELECT * FROM item WHERE item_id = {id_}").first()
 
@@ -105,7 +125,9 @@ def item(id_):
 
 @app.route('/buy', methods=['GET', 'POST'])
 def buy():
-    #Add this to the database
+    print(current_user.is_authenticated)
+    if current_user.is_authenticated:
+        print(current_user.user_id)
     return render_template('purchased.html')
 
 
@@ -134,6 +156,8 @@ def login():
                 return redirect(url_for('ban_page'))
             else:
                 login_user(user, remember=True)
+                if user.is_admin:
+                    return redirect(url_for('index_admin'))
                 return redirect(url_for('index'))
         else:
             flash('Login Unsuccessful. Please check email and password', 'danger')
