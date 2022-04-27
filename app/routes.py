@@ -5,7 +5,7 @@ from flask_login import login_user, login_required, user_logged_in, current_user
 from app.forms import LoginForm, RegistrationForm
 
 
-from app.models import User, Bidding, Item, Notification, Warnings, Reviews
+from app.models import User, Bidding, Item, Notification, Warnings, Reviews, Orders
 from datetime import datetime, timedelta
 
 #create post item page
@@ -37,6 +37,10 @@ def index():
     This route should be the main page, 
     grid of all items
     """
+
+    if current_user.is_authenticated:
+        if current_user.is_admin:
+            return redirect(url_for('index_admin'))
     
     data = db.engine.execute("SELECT * FROM item")
     data_dict = [{x.item_id: [x.item_name, x.item_desc, x.pic_url]} for x in data]
@@ -49,7 +53,7 @@ def index():
     
     return render_template('index.html', data=data_dict, notif=notif[2], date=notif[3], user=current_user)
 
-@app.route('/admin')
+@app.route('/a')
 def index_admin():
     """
     This route should be the main page for admins, 
@@ -123,11 +127,17 @@ def item(id_):
     return render_template("item.html", item=item, item_reviews=item_reviews, item_rating=item_rating, top_bid=top_bid)
 
 
-@app.route('/buy', methods=['GET', 'POST'])
-def buy():
-    print(current_user.is_authenticated)
+@app.route('/buy/<id_>', methods=['GET', 'POST'])
+def buy(id_):
+    
     if current_user.is_authenticated:
-        print(current_user.user_id)
+        bid_exist = cur.execute('SELECT * FROM bidding WHERE item_id=?',(id_)).fetchall()
+        bid_id_ = 9999
+        if bid_exist != []:
+            bid_id_ = bid_exist[0][0]
+        bid = Orders(user_id=current_user.user_id, item_id=id_, bid_id =bid_id_ )
+        db.session.add(bid)
+        db.session.commit()
     return render_template('purchased.html')
 
 

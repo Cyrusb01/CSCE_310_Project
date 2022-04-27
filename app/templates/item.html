@@ -304,7 +304,7 @@
           </a>
         </div>
 
-        <form method="post" action = "{{ url_for('buy') }}"  >
+        <form method="post" action = "{{ url_for('buy', id_ = item.item_id) }}"  >
           <button class="btn btn-outline-primary" type="submit" id="buybutton">
             Buy Now
           </button>
