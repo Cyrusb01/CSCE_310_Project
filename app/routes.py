@@ -176,7 +176,7 @@ def login():
 @app.route("/delete", methods=['GET', 'POST'])
 def delete():
     if current_user.is_authenticated:
-        delte = cur.execute('DELETE FROM user WHERE user_id=?;',(current_user.user_id))
+        delte = cur.execute('DELETE FROM user WHERE user_id=?',(current_user.user_id))
 
     return redirect(url_for("index"))
 
