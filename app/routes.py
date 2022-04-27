@@ -1,7 +1,7 @@
 from turtle import title
 from app import app, db
 from flask import render_template, url_for, flash, redirect, request
-from flask_login import login_user, login_required, user_logged_in
+from flask_login import login_user, login_required, user_logged_in, current_user
 from app.forms import LoginForm, RegistrationForm
 
 
@@ -75,12 +75,13 @@ def item(id_):
         item_rating /= len(item_reviews)
     
     if request.method == 'POST':
-        review = Reviews(item_id=id_, user_id=1, message=request.form['reviewText'], rating=request.form['reviewRating'])
-        db.session.add(review)
-        db.session.commit()
-        print("Added Review")
-        flash("Your review has been posted!", 'success')
-        return redirect(url_for('item', id_=id_))
+        if "reviewText" in request.form:
+            review = Reviews(item_id=id_, user_id=1, message=request.form['reviewText'], rating=request.form['reviewRating'])
+            db.session.add(review)
+            db.session.commit()
+            print("Added Review")
+            flash("Your review has been posted!", 'success')
+            return redirect(url_for('item', id_=id_))
       
     bid_data = db.engine.execute("SELECT * FROM bidding WHERE item_id = {}".format(id_)).first()
     top_bid = bid_data.top_bid if bid_data else 0
@@ -136,6 +137,7 @@ def login():
             if user.is_banned:  # If this user is banned
                 return redirect(url_for('ban_page'))
             else:
+                login_user(user)
                 return redirect(url_for('index'))
         else:
             flash('Login Unsuccessful. Please check email and password', 'danger')
