@@ -37,11 +37,6 @@ def index():
     This route should be the main page, 
     grid of all items
     """
-    # give no access to banned users
-    # TO DO: add user when login is working
-    banned_user = cur.execute("SELECT * FROM user WHERE username = 'testing' AND is_banned=1").fetchone()
-    if banned_user is not None:
-        return redirect(url_for('ban_page'))
     
     data = db.engine.execute("SELECT * FROM item")
     data_dict = [{x.item_id: [x.item_name, x.item_desc, x.pic_url]} for x in data]
