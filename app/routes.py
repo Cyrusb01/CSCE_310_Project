@@ -156,6 +156,8 @@ def login():
                 return redirect(url_for('ban_page'))
             else:
                 login_user(user, remember=True)
+                if user.is_admin:
+                    return redirect(url_for('index_admin'))
                 return redirect(url_for('index'))
         else:
             flash('Login Unsuccessful. Please check email and password', 'danger')
