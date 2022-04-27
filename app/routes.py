@@ -37,6 +37,10 @@ def index():
     This route should be the main page, 
     grid of all items
     """
+
+    if current_user.is_authenticated:
+        if current_user.is_admin:
+            return redirect(url_for('index_admin'))
     
     data = db.engine.execute("SELECT * FROM item")
     data_dict = [{x.item_id: [x.item_name, x.item_desc, x.pic_url]} for x in data]
