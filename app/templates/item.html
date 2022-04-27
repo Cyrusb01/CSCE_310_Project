@@ -221,22 +221,38 @@
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
       <div class="container-fluid">
         <a href="{{url_for('index')}}">
-          <img class="navbar-brand ms-4" src = "static/logo.png" href="{{url_for('index')}}" width="50px"></img>
+          <h4>Personal Shop</h4>
+          <!-- <img class="navbar-brand ms-4" src = "static/logo.png" href="{{url_for('index')}}" width="50px"></img> -->
         </a>
+        
       </div>
       <div
         class="collapse navbar-collapse col-9 me-4"
         id="navbarSupportedContent"
       >
         <ul class="navbar-nav ms-auto">
-          <li class="nav-item">
+          <li class="nav-item me-2"> 
+            <a
+              class="nav-link btn btn-outline-secondary"
+              href="{{ url_for('delete') }}"
+              >Delete Account
+            </a>
+          </li> 
+          <li class="nav-item me-2"> 
             <a
               class="nav-link btn btn-outline-secondary"
               href="{{ url_for('login') }}"
-              >Sign In / Sign Up</a
-            >
-          </li>
-          
+              >Sign In / Sign Up
+            </a>
+          </li> 
+          <li class="nav-item ">
+              <a
+                class="nav-link btn btn-outline-secondary"
+                href="{{ url_for('postItem') }}"
+                >Post Item
+              </a>
+            </li>
+
         </ul>
       </div>
     </nav>
