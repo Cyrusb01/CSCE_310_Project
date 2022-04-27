@@ -75,29 +75,25 @@ def item(id_):
     if item_rating != 0:
         item_rating /= len(item_reviews)
     
-    if request.method == 'POST':
-        if "reviewText" in request.form:
-            review = Reviews(item_id=id_, user_id=1, message=request.form['reviewText'], rating=request.form['reviewRating'])
-            db.session.add(review)
-            db.session.commit()
-            print("Added Review")
-            return redirect(url_for('item', id_=id_))
+    if request.method == 'POST' and 'reviewText' in request.form:
+        review = Reviews(item_id=id_, user_id=1, message=request.form['reviewText'], rating=request.form['reviewRating'])
+        db.session.add(review)
+        db.session.commit()
+        print("Added Review")
+        return redirect(url_for('item', id_=id_))
       
     bid_data = db.engine.execute("SELECT * FROM bidding WHERE item_id = {}".format(id_)).first()
     top_bid = bid_data.top_bid if bid_data else 0
-    if request.method == 'POST':
-        print("POST METHOD")
+    if request.method == 'POST' and 'place_bid' in request.form:
         top_bid = float(request.form['place_bid'])
         bid = db.session.query(Bidding).filter_by(item_id= id_).first()
         now = datetime.now() + timedelta(hours=24)
         if bid is None:
-           
-
             # formatted_date = now.strftime('%Y-%m-%d %H:%M:%S')
             bid = Bidding(item_id=id_, top_bid=top_bid, user_id = id_, bid_expire_date = now)
             db.session.add(bid)
             db.session.commit()
-            print("Committed")
+            print("Bid Committed")
             # flash('Bid Placed!')
         else:
             cur.execute('UPDATE bidding SET top_bid = ?, bid_expire_date = ? WHERE item_id = ?', (top_bid, now, id_))
