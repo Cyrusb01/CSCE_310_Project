@@ -10,6 +10,7 @@ from datetime import datetime, timedelta
 
 #create post item page
 @app.route('/postItem')
+@login_required
 def postItem():
     return render_template('postItem.html', title="Post an Item Here!")
 
@@ -46,7 +47,7 @@ def index():
     # con.commit()
     notif = ["some", "some", "some", 'somet']
     
-    return render_template('index.html', data=data_dict, notif=notif[2], date=notif[3])
+    return render_template('index.html', data=data_dict, notif=notif[2], date=notif[3], user=current_user)
 
 
 @app.route('/shop')
@@ -80,7 +81,6 @@ def item(id_):
             db.session.add(review)
             db.session.commit()
             print("Added Review")
-            flash("Your review has been posted!", 'success')
             return redirect(url_for('item', id_=id_))
       
     bid_data = db.engine.execute("SELECT * FROM bidding WHERE item_id = {}".format(id_)).first()
@@ -137,7 +137,7 @@ def login():
             if user.is_banned:  # If this user is banned
                 return redirect(url_for('ban_page'))
             else:
-                login_user(user)
+                login_user(user, remember=True)
                 return redirect(url_for('index'))
         else:
             flash('Login Unsuccessful. Please check email and password', 'danger')
@@ -151,13 +151,20 @@ def admin():
 def ban_users():
     if request.method == 'POST':
         # ban user
+        # if user is banned, he/she should not be able to access anything on the index page
         if 'username' in request.form:
-            print('check exist')
+            # get the username from html input field
             username = request.form['username']
+            # check if the user exists in the database
+            user_exist = cur.execute('SELECT * FROM user WHERE username=?',(username,)).fetchall()
+            if user_exist == []:
+                flash("This username does not exist in our records, please check your spelling and try again")
+                return redirect(url_for('ban_users'))  
             cur.execute('SELECT * FROM user WHERE username = ? AND is_banned = 1', (username, ))
             print('check username', username)
             check_ban = cur.fetchone()
             print('check ban', check_ban)
+            # check if this user is already banned
             if check_ban is not None:
                 flash('This user is already banned')
                 con.commit
@@ -166,11 +173,18 @@ def ban_users():
                 con.commit()
         # unban user   
         elif 'username_unban' in request.form:
+            # get the username from html input field
             username_unban = request.form['username_unban']
+            # check if the user exists in the database
+            user_exist = cur.execute('SELECT * FROM user WHERE username=?',(username_unban,)).fetchall()
+            if user_exist == []:
+                flash("This username does not exist in our records, please check your spelling and try again")
+                return redirect(url_for('ban_users'))
             cur.execute('SELECT * FROM user WHERE username = ? AND is_banned = 0', (username_unban, ))
             print('check username_un', username_unban)
             check_unban = cur.fetchone()
             print('check unban', check_unban)
+            # check if this user exist in the banned users list
             if check_unban is not None:
                 flash('This user does not exist in the banned users list')
                 con.commit
@@ -192,6 +206,7 @@ def notification():
     now = datetime.now() + timedelta(hours=24)
     if request.method == 'POST':
         # create notification
+        # TO DO: Add username id after the login issue is resolved
         if 'notif_create' in request.form: 
             notif_create = request.form['notif_create']
             notif = Notification(user_id=1, notif_desc=notif_create, date_made = now)
@@ -229,8 +244,13 @@ def add_admin():
     if request.method == 'POST':
         # Add admin
         if 'username' in request.form:
-           
+            # get the username from html input field
             username = request.form['username']
+            # check if the user exists in the database
+            user_exist = cur.execute('SELECT * FROM user WHERE username=?',(username,)).fetchall()
+            if user_exist == []:
+                flash("This username does not exist in our records, please check your spelling and try again")
+                return redirect(url_for('add_admin'))
             cur.execute('SELECT * FROM user WHERE username = ? AND is_admin = 1', (username, ))
             print('check username', username)
             check_add = cur.fetchone()
@@ -241,9 +261,15 @@ def add_admin():
             else:
                 cur.execute('UPDATE user SET is_admin = 1 WHERE username = ?', (username,))
                 con.commit()
-        # unban user   
+        # delete admin   
         elif 'username_del' in request.form:
+            # get the username from html input field
             username_del = request.form['username_del']
+            # check if the user exists in the database
+            user_exist = cur.execute('SELECT * FROM user WHERE username=?',(username_del,)).fetchall()
+            if user_exist == []:
+                flash("This username does not exist in our records, please check your spelling and try again")
+                return redirect(url_for('add_admin'))
             cur.execute('SELECT * FROM user WHERE username = ? AND is_admin = 0', (username_del, ))
             print('check username_del', username_del)
             check_del = cur.fetchone()
@@ -256,7 +282,7 @@ def add_admin():
                 con.commit()
         return redirect(url_for('add_admin'))        
             
-    # show banned users list        
+    # show admin list        
     cur.execute("SELECT * FROM user WHERE is_admin = 1")
     admin = cur.fetchall()
     if admin == []:

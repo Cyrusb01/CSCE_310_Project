@@ -1,6 +1,7 @@
 from sqlalchemy.orm import declarative_base
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Float, Boolean
 from datetime import datetime
+from flask_login import UserMixin
 """
 Alembic Commands:
     alembic revision --autogenerate -m "initial migration"
@@ -9,7 +10,7 @@ Alembic Commands:
 
 Base = declarative_base()
 
-class User(Base):
+class User(Base, UserMixin):
     __tablename__ = 'user'
     user_id = Column(Integer, primary_key=True)
     username = Column(String, nullable=False)
@@ -21,6 +22,9 @@ class User(Base):
     last_name = Column(String, nullable=False)
     city = Column(String, nullable=False)
     email = Column(String, nullable=False)
+
+    def get_id(self):
+        return (self.user_id)
 
     def __repr__(self):
         return f"<User(user_id={self.user_id}, username={self.username}, password={self.password}, is_admin={self.is_admin}, is_banned={self.is_banned}, address={self.address}, first_name={self.first_name}, last_name={self.last_name}, city={self.city}, email={self.email})>"
