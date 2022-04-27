@@ -30,7 +30,7 @@
         </a>
         
       </div>
-      {% if user.username %}
+      {% if user.is_authenticated %}
       <h5 class="text-nowrap text-center" style="color: white">Welcome, {{user.username}}</h5>
       {% endif %}
       <div
