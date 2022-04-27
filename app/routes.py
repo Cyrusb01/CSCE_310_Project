@@ -224,33 +224,34 @@ def ban_users():
 @app.route("/notification", methods=['GET', 'POST'])
 def notification():
 
-    now = datetime.now() + timedelta(hours=24)
+    now = datetime.now()
     if request.method == 'POST':
         # create notification
         # TO DO: Add username id after the login issue is resolved
-        if 'notif_create' in request.form: 
-            notif_create = request.form['notif_create']
-            notif = Notification(user_id=1, notif_desc=notif_create, date_made = now)
-            db.session.add(notif)
-            db.session.commit()
-            flash("notification added")
-            redirect (url_for('notification'))
-            print("test1")
-        # Update Notification
-        elif 'notif_update' in request.form:
-            print("test")
-            notif_update = request.form['notif_update']
-            cur.execute('UPDATE notification SET (notif_desc, date_made)=(?,?) WHERE [notification_id]=(SELECT MAX([notification_id]) FROM notification)', (notif_update, now))
-            con.commit()
-            flash("notification updated")
-            redirect (url_for('notification'))
-        # Delete Notification
-        elif 'delete' in request.form:
-            print("test delete")
-            cur.execute('DELETE FROM notification WHERE [notification_id]=(SELECT MAX([notification_id]) FROM notification)')
-            con.commit()
-            flash("notification deleted")
-            redirect (url_for('notification'))
+        if current_user.is_authenticated:
+            if 'notif_create' in request.form: 
+                notif_create = request.form['notif_create']
+                notif = Notification(user_id=current_user.user_id, notif_desc=notif_create, date_made = now)
+                db.session.add(notif)
+                db.session.commit()
+                flash("notification added")
+                redirect (url_for('notification'))
+                print("test1")
+            # Update Notification
+            elif 'notif_update' in request.form:
+                print("test")
+                notif_update = request.form['notif_update']
+                cur.execute('UPDATE notification SET (notif_desc, date_made)=(?,?) WHERE [notification_id]=(SELECT MAX([notification_id]) FROM notification)', (notif_update, now))
+                con.commit()
+                flash("notification updated")
+                redirect (url_for('notification'))
+            # Delete Notification
+            elif 'delete' in request.form:
+                print("test delete")
+                cur.execute('DELETE FROM notification WHERE [notification_id]=(SELECT MAX([notification_id]) FROM notification)')
+                con.commit()
+                flash("notification deleted")
+                redirect (url_for('notification'))
     # Display notification      
     notif_list = cur.execute("SELECT notification.notification_id, notification.notif_desc, user.username FROM notification INNER JOIN user ON notification.user_id=user.user_id").fetchall()
     con.commit() 
