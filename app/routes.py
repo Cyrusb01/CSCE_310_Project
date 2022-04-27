@@ -75,6 +75,7 @@ def shop():
 
 
 @app.route('/item/<id_>', methods=['GET', 'POST'])
+@login_required
 def item(id_):
     item = db.engine.execute(f"SELECT * FROM item WHERE item_id = {id_}").first()
 
@@ -124,7 +125,9 @@ def item(id_):
 
 @app.route('/buy', methods=['GET', 'POST'])
 def buy():
-    #Add this to the database
+    print(current_user.is_authenticated)
+    if current_user.is_authenticated:
+        print(current_user.user_id)
     return render_template('purchased.html')
 
 
