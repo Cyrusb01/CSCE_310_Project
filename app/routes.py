@@ -36,7 +36,12 @@ def index():
     This route should be the main page, 
     grid of all items
     """
-
+    # give no access to banned users
+    # TO DO: add user when login is working
+    banned_user = cur.execute("SELECT * FROM user WHERE username = 'testing' AND is_banned=1").fetchone()
+    if banned_user is not None:
+        return redirect(url_for('ban_page'))
+    
     data = db.engine.execute("SELECT * FROM item")
     data_dict = [{x.item_id: [x.item_name, x.item_desc, x.pic_url]} for x in data]
     # print(data_dict)
@@ -143,6 +148,7 @@ def login():
             flash('Login Unsuccessful. Please check email and password', 'danger')
     return render_template('login.html', title='Login', form=form)
 
+# TODO: polish admin homepage fix admin button 
 @app.route("/admin", methods=['GET', 'POST'])
 def admin():
     return render_template('admin.html', title='admin')
