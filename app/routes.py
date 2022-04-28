@@ -1,7 +1,7 @@
 from turtle import title
 from app import app, db
 from flask import render_template, url_for, flash, redirect, request
-from flask_login import login_user, login_required, user_logged_in, current_user
+from flask_login import login_user, login_required, user_logged_in, current_user, logout_user
 from app.forms import LoginForm, RegistrationForm
 
 
@@ -43,7 +43,7 @@ def index():
             return redirect(url_for('index_admin'))
     
     data = db.engine.execute("SELECT * FROM item")
-    data_dict = [{x.item_id: [x.item_name, x.item_desc, x.pic_url]} for x in data]
+    data_dict = [{x.item_id: [x.item_name.title(), x.item_desc, x.pic_url]} for x in data]
     # print(data_dict)
     cur.execute("SELECT * FROM notification WHERE [notification_id]=(SELECT MAX([date_made]) FROM notification)")
     notif = cur.fetchone()
@@ -61,7 +61,7 @@ def index_admin():
     """
 
     data = db.engine.execute("SELECT * FROM item")
-    data_dict = [{x.item_id: [x.item_name, x.item_desc, x.pic_url]} for x in data]
+    data_dict = [{x.item_id: [x.item_name.title(), x.item_desc, x.pic_url]} for x in data]
     # print(data_dict)
     cur.execute("SELECT * FROM notification WHERE [date_made]=(SELECT MAX([date_made]) FROM notification)")
     notif = cur.fetchone()
@@ -173,6 +173,14 @@ def login():
         else:
             flash('Login Unsuccessful. Please check email and password', 'danger')
     return render_template('login.html', title='Login', form=form)
+
+@app.route("/delete", methods=['GET', 'POST'])
+def delete():
+    if current_user.is_authenticated:
+        cur.execute('DELETE FROM user WHERE user_id = ?',(str(current_user.user_id)))
+        con.commit()
+
+    return redirect(url_for("index"))
 
 # TODO: polish admin homepage fix admin button 
 @app.route("/admin", methods=['GET', 'POST'])

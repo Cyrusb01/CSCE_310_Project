@@ -26,12 +26,12 @@
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
       <div class="container-fluid">
         <a href="{{url_for('index')}}">
-          <img class="navbar-brand ms-4" src = "static/logo.png" href="{{url_for('index')}}" width="50px"></img>
+          <img class="navbar-brand ms-4" src = "https://w7.pngwing.com/pngs/1022/32/png-transparent-shopping-cart-icon-shopping-cart-logo-icon-shopping-cart-label-coffee-shop-shopping-mall.png" href="{{url_for('index')}}" width="50px"></img>
         </a>
         
       </div>
       {% if user.is_authenticated %}
-      <h5 class="text-nowrap text-center" style="color: white">Welcome, {{user.username}}</h5>
+        <h5 class="text-nowrap text-center" style="color: white">Welcome, {{user.username}}</h5>
       {% endif %}
       <div
         class="collapse navbar-collapse col-9 me-4"
@@ -41,13 +41,18 @@
           <li class="nav-item me-2"> 
             <a
               class="nav-link btn btn-outline-secondary"
+              href="{{ url_for('delete') }}"
+              >Delete Account
+            </a>
+          </li> 
+          <li class="nav-item me-2"> 
+            <a
+              class="nav-link btn btn-outline-secondary"
               href="{{ url_for('admin') }}"
               >Admin
             </a>
           </li>
-
-
-          <li class="nav-item"> 
+          <li class="nav-item me-2"> 
             <a
               class="nav-link btn btn-outline-secondary"
               href="{{ url_for('login') }}"
@@ -59,7 +64,7 @@
               <a
                 class="nav-link btn btn-outline-secondary"
                 href="{{ url_for('postItem') }}"
-                >Post_Item
+                >Post Item
               </a>
             </li>
 
@@ -90,7 +95,7 @@
 -->
 
     <!-- Search Bar -->
-    <div class="row mt-5 justify-content-center mx-auto">
+    <!-- <div class="row mt-5 justify-content-center mx-auto">
       <div class="search-bar col-12 d-flex justify-content-center" style="width: 35%">
         <div class="input-group">
           <input
@@ -105,11 +110,11 @@
             id="searchbutton"
           >
             Search
-            <!-- <i class="search-icon fa-solid fa-magnifying-glass" styles="font-size: 1.4em"></i> -->
+            <!-- <i class="search-icon fa-solid fa-magnifying-glass" styles="font-size: 1.4em"></i>
           </button>
         </div>
       </div>
-    </div>
+    </div> -->
     <!-- Notification -->
       <div class="row mt-5 mx-auto">
         <div class="col-12 d-flex justify-content-center">
