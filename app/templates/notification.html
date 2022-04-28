@@ -1,8 +1,11 @@
 {% extends 'adminTemplate.html'%} {% block title %} notification {% endblock %}
 {%block content %}
 <h1>{% block admin_title %} Manage Notification {% endblock %}</h1>
-<p>Notify everyone what's going on ..</p>
-<div class="row mt-4">
+<p>
+  Notify everyone what's going on .. The latest updated notification will appear
+  in the main page
+</p>
+<div class="row mt-3">
   <div class="col-lg-4 col-md-6 mt-4 mb-4">
     <div class="card z-index-2">
       <div
@@ -65,9 +68,16 @@
         class="card-header p-0 position-relative mt-n4 mx-3 my-4 z-index-2 bg-transparent"
       >
         <!-- Update Form -->
-        <h3 class="text-center">Update for latest notification</h3>
+        <h3 class="text-center">Update notification</h3>
         <div>
           <form class="px-4 py-3" action="notification" method="POST">
+            <div class="mb-3">
+              <label for="exampleDropdownFormEmail1" class="form-label"
+                >ID</label
+              >
+
+              <input type="text" name="update_notif_id" class="form-control" />
+            </div>
             <div class="mb-3">
               <label for="exampleDropdownFormEmail1" class="form-label"
                 >Description</label
@@ -106,22 +116,17 @@
         class="card-header p-0 position-relative mt-n4 mx-3 my-4 z-index-2 bg-transparent"
       >
         <!-- Delete Form -->
-        <h3 class="text-center">Delete Latest Notification</h3>
+        <h3 class="text-center">Delete Notification</h3>
         <div>
           <form class="px-4 py-3" action="notification" method="POST">
-            <!--<div class="mb-3">
+            <div class="mb-3">
               <label for="exampleDropdownFormEmail1" class="form-label"
-                >Title</label
+                >ID</label
               >
 
-              <input
-                type="text"
-                name="delete_title"
-                class="form-control"
-                placeholder="Title"
-              />
+              <input type="text" name="notif_id" class="form-control" />
             </div>
-            <div class="mb-3">
+            <!--<div class="mb-3">
               <label for="exampleDropdownFormPassword1" class="form-label"
                 >ID</label
               >
@@ -151,16 +156,20 @@
   <h5>Current Notification List</h5>
   <table class="table table-striped mt-2">
     <thead class="table-danger">
-      <tr>
-        <th>Description</th>
-        <th>Admin</th>
+      <tr class="d-flex">
+        <th class="col-1">ID</th>
+        <th class="col-5">Description</th>
+        <th class="col-3">Admin</th>
+        <th class="col-3">Date / Time</th>
       </tr>
     </thead>
     <tbody>
       {% for notif in notif_list %}
-      <tr>
-        <td>{{notif[1]}}</td>
-        <td>{{notif[2]}}</td>
+      <tr class="d-flex">
+        <td class="col-1">{{notif[0]}}</td>
+        <td class="col-5">{{notif[1]}}</td>
+        <td class="col-3">{{notif[3]}}</td>
+        <td class="col-3">{{notif[2]}} / {{notif[4]}}</td>
       </tr>
       {% endfor %}
     </tbody>

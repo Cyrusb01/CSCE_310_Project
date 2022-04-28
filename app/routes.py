@@ -45,11 +45,11 @@ def index():
     data = db.engine.execute("SELECT * FROM item")
     data_dict = [{x.item_id: [x.item_name, x.item_desc, x.pic_url]} for x in data]
     # print(data_dict)
-    # cur.execute("SELECT * FROM notification WHERE [notification_id]=(SELECT MAX([notification_id]) FROM notification)")
-    # notif = cur.fetchone()
+    cur.execute("SELECT * FROM notification WHERE [notification_id]=(SELECT MAX([date_made]) FROM notification)")
+    notif = cur.fetchone()
     # print(notif)
     # con.commit()
-    notif = ["some", "some", "some", 'somet']
+    # notif = ["some", "some", "some", 'somet']
     
     return render_template('index.html', data=data_dict, notif=notif[2], date=notif[3], user=current_user)
 
@@ -63,11 +63,12 @@ def index_admin():
     data = db.engine.execute("SELECT * FROM item")
     data_dict = [{x.item_id: [x.item_name, x.item_desc, x.pic_url]} for x in data]
     # print(data_dict)
-    # cur.execute("SELECT * FROM notification WHERE [notification_id]=(SELECT MAX([notification_id]) FROM notification)")
-    # notif = cur.fetchone()
-    # print(notif)
+    cur.execute("SELECT * FROM notification WHERE [date_made]=(SELECT MAX([date_made]) FROM notification)")
+    notif = cur.fetchone()
+    
+    print(notif)
     # con.commit()
-    notif = ["some", "some", "some", 'somet']
+    # notif = ["some", "some", "some", 'somet']
     
     return render_template('index_admin.html', data=data_dict, notif=notif[2], date=notif[3], user=current_user)
 
@@ -176,7 +177,9 @@ def login():
 # TODO: polish admin homepage fix admin button 
 @app.route("/admin", methods=['GET', 'POST'])
 def admin():
-    return render_template('admin.html', title='admin')
+    firstName = current_user.first_name
+    lastName = current_user.last_name
+    return render_template('admin.html', title='admin', firstName=firstName, lastName=lastName)
 
 @app.route("/ban_users", methods=['GET', 'POST'])
 def ban_users():
@@ -251,19 +254,35 @@ def notification():
             elif 'notif_update' in request.form:
                 print("test")
                 notif_update = request.form['notif_update']
-                cur.execute('UPDATE notification SET (notif_desc, date_made)=(?,?) WHERE [notification_id]=(SELECT MAX([notification_id]) FROM notification)', (notif_update, now))
-                con.commit()
-                flash("notification updated")
-                redirect (url_for('notification'))
+                id = request.form['update_notif_id']
+                # check if id exists in the database
+                id_check = cur.execute('SELECT * FROM notification WHERE notification_id=?',(id,)).fetchone()
+                if id_check is None:
+                    flash("This notification does not exist, please try again")
+                    return redirect(url_for('notification'))
+                else:
+                    cur.execute('UPDATE notification SET (notif_desc, date_made)=(?,?) WHERE notification_id=?', (notif_update, now, id,))
+                    con.commit()
+                    flash("notification updated")
+                    redirect (url_for('notification'))
             # Delete Notification
             elif 'delete' in request.form:
                 print("test delete")
-                cur.execute('DELETE FROM notification WHERE [notification_id]=(SELECT MAX([notification_id]) FROM notification)')
-                con.commit()
-                flash("notification deleted")
-                redirect (url_for('notification'))
+                id = request.form['notif_id']
+                # check if id exists in the database
+                id_check = cur.execute('SELECT * FROM notification WHERE notification_id=?',(id,)).fetchone()
+                if id_check is None:
+                    flash("This notification does not exist, please try again")
+                    return redirect(url_for('notification'))
+                else:
+                    cur.execute('DELETE FROM notification WHERE notification_id=?', id)
+                    con.commit()
+                    flash("notification deleted")
+                    redirect (url_for('notification'))
     # Display notification      
-    notif_list = cur.execute("SELECT notification.notification_id, notification.notif_desc, user.username FROM notification INNER JOIN user ON notification.user_id=user.user_id").fetchall()
+    notif_list = cur.execute("SELECT notification.notification_id, notification.notif_desc, notification.date_made, user.username FROM notification INNER JOIN user ON notification.user_id=user.user_id").fetchall()
+    notif_list = [(row[0], row[1], row[2][:10], row[3], row[2][11:19]) for row in notif_list]
+    # print(notif_list)
     con.commit() 
     return render_template('notification.html', title='notification', notif_list=notif_list)
 

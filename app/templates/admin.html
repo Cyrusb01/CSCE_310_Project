@@ -1,5 +1,8 @@
 {% extends 'adminTemplate.html'%} {% block title %} Homepage {% endblock %}
 {%block content %}
-<h1>{% block admin_title %} Welcome, Admin Name Last_name {% endblock %}</h1>
+<h1>
+  {% block admin_title %} Welcome, Admin {{lastName}}, {{firstName}} {% endblock
+  %}
+</h1>
 <p>Homepage</p>
 {% endblock %}
