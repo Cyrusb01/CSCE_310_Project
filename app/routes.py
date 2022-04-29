@@ -114,24 +114,40 @@ def item(id_):
         db.session.commit()
         print("Added Review")
         return redirect(url_for('item', id_=id_))
-      
-    bid_data = db.engine.execute("SELECT * FROM bidding WHERE item_id = {}".format(id_)).first()
+    
+    
+    #BID QUERY 
+    bid_data = db.engine.execute(f"SELECT * FROM bidding WHERE item_id = {id_} ORDER BY top_bid DESC;").first()
     top_bid = bid_data.top_bid if bid_data else 0
+
     if request.method == 'POST' and 'place_bid' in request.form:
         top_bid = float(request.form['place_bid'])
-        bid = db.session.query(Bidding).filter_by(item_id= id_).first()
-        now = datetime.now() + timedelta(hours=24)
-        if bid is None:
-            # formatted_date = now.strftime('%Y-%m-%d %H:%M:%S')
-            bid = Bidding(item_id=id_, top_bid=top_bid, user_id = id_, bid_expire_date = now)
-            db.session.add(bid)
+        user_bid = db.engine.execute("SELECT * FROM bidding WHERE item_id = ? and user_id = ?", (id_, current_user.user_id)).first()
+        
+        now = datetime.now() 
+       
+        if user_bid is None:
+            
+            #INSERT BID 
+            db.engine.execute("INSERT INTO bidding (item_id, user_id, top_bid, bid_placed_date) VALUES (?, ?, ?, ?)", (id_, current_user.user_id, top_bid, now))
             db.session.commit()
-            print("Bid Committed")
-            # flash('Bid Placed!')
+            
         else:
-            cur.execute('UPDATE bidding SET top_bid = ?, bid_expire_date = ? WHERE item_id = ?', (top_bid, now, id_))
-            con.commit()
-            # flash('Bid Placed!')
+
+            #UPDATE BID 
+            db.engine.execute('UPDATE bidding SET top_bid = ?, bid_placed_date = ? WHERE item_id = ? and user_id = ?', (top_bid, now, id_, current_user.user_id))
+            db.session.commit()
+
+    if request.method == 'POST' and 'remove_bid' in request.form:
+        
+        #DELETE BID 
+        db.session.execute(f'DELETE FROM bidding WHERE item_id = {id_} and user_id = {current_user.user_id}')
+        db.session.commit()
+
+        return redirect(url_for('item', id_=id_))
+
+        
+
 
     return render_template("item.html", item=item, item_reviews=item_reviews, item_rating=item_rating, top_bid=top_bid)
 
