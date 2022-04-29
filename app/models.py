@@ -102,7 +102,6 @@ class Banned(Base):
     __tablename__ = 'banned_users'
     ban_pk = Column(Integer, primary_key=True)
     user_id = Column(Integer,  ForeignKey('user.user_id'), nullable=False)
-    ban_id = Column(Integer, nullable=False)
 
     def __repr__(self):
-        return f"<Banned(user_id={self.user_id}, ban_id={self.ban_id})"
+        return f"<Banned(ban_pk={self.ban_pk}, user_id={self.user_id})"
