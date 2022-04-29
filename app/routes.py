@@ -4,7 +4,7 @@ from sqlalchemy import false
 from app import app, db
 from flask import render_template, url_for, flash, redirect, request
 from flask_login import login_user, login_required, user_logged_in, current_user, logout_user
-from app.forms import LoginForm, RegistrationForm
+from app.forms import LoginForm, RegistrationForm, PostItemForm
 
 
 from app.models import User, Bidding, Item, Notification, Warnings, Reviews, Orders
@@ -24,14 +24,21 @@ def postItem():
 
 @app.route('/itemForm', methods=["POST"])
 def itemForm():
+    item_name = request.form.get("item_name")
     item_desc = request.form.get("item_desc")
     price = request.form.get("price")
     pic_url = request.form.get("pic_url")
     is_biddable = request.form.get("is_biddable")
+    booleancheck = 0
+    if  (is_biddable == "on"):
+        booleancheck = 1
 
+    item = Item(item_name = item_name,user_id = current_user.user_id,warning_id="000",item_desc = item_desc,price =price, pic_url=pic_url, is_biddable=booleancheck)
+    db.session.add(item)
+    db.session.commit()
     return render_template('itemForm.html')
 
-
+    
 # change
 @app.route('/')
 def index():
