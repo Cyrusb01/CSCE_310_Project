@@ -33,6 +33,10 @@ tr {
   margin: 0px auto;
 }
 
+td {
+  word-break: break-all;
+}
+
 .table {
   margin: 0px auto;
   float: none;

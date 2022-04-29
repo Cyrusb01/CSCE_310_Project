@@ -7,7 +7,7 @@ from flask_login import login_user, login_required, user_logged_in, current_user
 from app.forms import LoginForm, RegistrationForm, PostItemForm
 
 
-from app.models import User, Bidding, Item, Notification, Warnings, Reviews, Orders
+from app.models import User, Bidding, Item, Notification, Warnings, Reviews, Orders, Banned
 from datetime import datetime, timedelta
 
 import sqlite3
@@ -53,6 +53,11 @@ def index():
     
     data = db.engine.execute("SELECT * FROM item")
     data_dict = [{x.item_id: [x.item_name.title(), x.item_desc, x.pic_url]} for x in data]
+    """
+    Patcharapa
+    
+    This sql command will select the latest notification from notification table and display it on the index page
+    """
     cur.execute("SELECT * FROM notification WHERE [date_made]=(SELECT MAX([date_made]) FROM notification)")
     notif = cur.fetchone()
     valid_notif = True
@@ -211,6 +216,11 @@ def login():
         user_1 = db.engine.execute("SELECT * FROM user WHERE email = ? and password = ?", (form.email.data, form.password.data)).first()
         user = db.session.query(User).filter_by(email=form.email.data, password=form.password.data).first()
         
+        """
+        Patcharapa
+        
+        redirect to ban page if the user is in the banned users list
+        """
         if user:
             if user.is_banned:  # If this user is banned
                 return redirect(url_for('ban_page'))
@@ -257,6 +267,11 @@ def change_username():
 # TODO: polish admin homepage fix admin button 
 @app.route("/admin", methods=['GET', 'POST'])
 def admin():
+    """
+    Patcharapa
+    
+    contains all admin features in this page
+    """
     firstName = current_user.first_name
     lastName = current_user.last_name
     return render_template('admin.html', title='admin', firstName=firstName, lastName=lastName)
@@ -264,6 +279,11 @@ def admin():
 
 @app.route("/ban_users", methods=['GET', 'POST'])
 def ban_users():
+    """
+    Patcharapa
+    
+    ban and unban user, and show banned users list
+    """
     if request.method == 'POST':
         # ban user
         # if user is banned, he/she should not be able to access anything on the index page
@@ -271,21 +291,32 @@ def ban_users():
             # get the username from html input field
             username = request.form['username']
             # check if the user exists in the database
-            user_exist = cur.execute('SELECT * FROM user WHERE username=?',(username,)).fetchall()
-            if user_exist == []:
+            user_exist = cur.execute('SELECT * FROM user WHERE username=?',(username,)).fetchone()
+            
+            if user_exist is None:
                 flash("This username does not exist in our records, please check your spelling and try again")
                 return redirect(url_for('ban_users'))  
+            
+            # if user exist in the database then update user table and add this user to the banned_users table
             cur.execute('SELECT * FROM user WHERE username = ? AND is_banned = 1', (username, ))
-            print('check username', username)
             check_ban = cur.fetchone()
-            print('check ban', check_ban)
+            print("user banned: ", check_ban)
+            
             # check if this user is already banned
             if check_ban is not None:
                 flash('This user is already banned')
-                con.commit
             else:
+                # update user
                 cur.execute('UPDATE user SET is_banned = 1 WHERE username = ?', (username,))
                 con.commit()
+                # add user to banned_user
+                get_id = cur.execute("SELECT user_id FROM user where username = ?", (username,)).fetchone()
+                banned = Banned(user_id=get_id[0])
+                db.session.add(banned)
+                db.session.commit()
+                
+                
+                
         # unban user   
         elif 'username_unban' in request.form:
             # get the username from html input field
@@ -302,14 +333,19 @@ def ban_users():
             # check if this user exist in the banned users list
             if check_unban is not None:
                 flash('This user does not exist in the banned users list')
-                con.commit
             else:
+                # update user
                 cur.execute('UPDATE user SET is_banned = 0 WHERE username = ?', (username_unban,))
                 con.commit()
+                # delete user from banned_user
+                get_id = cur.execute("SELECT user_id FROM user where username = ?", (username_unban,)).fetchone()
+                cur.execute('DELETE from banned_users WHERE user_id = ?', (get_id[0],))
+                con.commit()
+                
         return redirect(url_for('ban_users'))      
             
     # show banned users list        
-    cur.execute("SELECT * FROM user WHERE is_banned = 1")
+    cur.execute("SELECT banned_users.user_id, user.username FROM banned_users INNER JOIN user ON banned_users.user_id=user.user_id")
     banned_user = cur.fetchall()
     if banned_user == []:
         banned_user = [('dummy','Currently have no banned users')]    
@@ -318,11 +354,15 @@ def ban_users():
 
 @app.route("/notification", methods=['GET', 'POST'])
 def notification():
-
+    """
+    Patcharapa
+    
+    add, update, delete notification
+    """
     now = datetime.now()
     if request.method == 'POST':
         # create notification
-        # TO DO: Add username id after the login issue is resolved
+        # TODO: Add username id after the login issue is resolved
         if current_user.is_authenticated:
             if 'notif_create' in request.form: 
                 notif_create = request.form['notif_create']
@@ -362,10 +402,13 @@ def notification():
                     flash("notification deleted")
                     redirect (url_for('notification'))
     # Display notification      
-    notif_list = cur.execute("SELECT notification.notification_id, notification.notif_desc, notification.date_made, user.username FROM notification INNER JOIN user ON notification.user_id=user.user_id").fetchall()
-    notif_list = [(row[0], row[1], row[2][:10], row[3], row[2][11:19]) for row in notif_list]
+    notif_list = cur.execute("SELECT notification.notification_id, notification.notif_desc, user.username, notification.date_made FROM notification INNER JOIN user ON notification.user_id=user.user_id").fetchall()
+    if notif_list == []:
+        notif_list = [('N/A','Currently have no notification','N/A','N/A','N/A')]  
+    else:
+        notif_list = [(row[0], row[1], row[2], row[3][:10], row[3][11:19]) for row in notif_list]
     # print(notif_list)
-    con.commit() 
+      
     return render_template('notification.html', title='notification', notif_list=notif_list)
 
 
@@ -376,6 +419,11 @@ def warning():
 
 @app.route("/add_admin", methods=['GET', 'POST'])
 def add_admin():
+    """
+    Patcharapa
+    
+    add/delete admin role
+    """
     if request.method == 'POST':
         # Add admin
         if 'username' in request.form:
@@ -428,4 +476,9 @@ def add_admin():
 
 @app.route("/ban_page", methods=['GET', 'POST'])
 def ban_page():
+    """
+    Patcharapa
+    
+    Display when user is in banned users list
+    """
     return render_template('banPage.html', title='ban_page')
