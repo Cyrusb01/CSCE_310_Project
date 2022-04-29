@@ -93,3 +93,12 @@ class Reviews(Base):
 
     def __repr__(self):
         return f"<Reviews(review_id={self.review_id}, item_id={self.item_id}, user_id={self.user_id}, message={self.message}, rating={self.rating})"
+
+class Banned(Base):
+    __tablename__ = 'banned_users'
+    ban_pk = Column(Integer, primary_key=True)
+    user_id = Column(Integer,  ForeignKey('user.user_id'), nullable=False)
+    ban_id = Column(Integer, nullable=False)
+
+    def __repr__(self):
+        return f"<Banned(user_id={self.user_id}, ban_id={self.ban_id})"
