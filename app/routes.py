@@ -39,17 +39,17 @@ def itemForm():
     return render_template('itemForm.html')
 
     
-# change
+
 @app.route('/')
 def index():
     """
+    Cyrus 
+
     This route should be the main page, 
     grid of all items
     """
 
-    # if current_user.is_authenticated:
-    #     if current_user.is_admin:
-    #         return redirect(url_for('index_admin'))
+   
     
     data = db.engine.execute("SELECT * FROM item")
     data_dict = [{x.item_id: [x.item_name.title(), x.item_desc, x.pic_url]} for x in data]
@@ -90,6 +90,11 @@ def shop():
 @app.route('/item/<id_>', methods=['GET', 'POST'])
 @login_required
 def item(id_):
+    """
+    Cyrus and someone 
+
+    This route shows the item page, equipped with a couple features
+    """
     item = db.engine.execute(f"SELECT * FROM item WHERE item_id = {id_}").first()
 
     item_reviews = []
@@ -114,24 +119,45 @@ def item(id_):
         db.session.commit()
         print("Added Review")
         return redirect(url_for('item', id_=id_))
-      
-    bid_data = db.engine.execute("SELECT * FROM bidding WHERE item_id = {}".format(id_)).first()
+    
+    #Cyrus 
+    #BID QUERY 
+    #find the top bid 
+    bid_data = db.engine.execute(f"SELECT * FROM bidding WHERE item_id = {id_} ORDER BY top_bid DESC;").first()
     top_bid = bid_data.top_bid if bid_data else 0
+
+    #This is if someone placed a bid 
     if request.method == 'POST' and 'place_bid' in request.form:
         top_bid = float(request.form['place_bid'])
-        bid = db.session.query(Bidding).filter_by(item_id= id_).first()
-        now = datetime.now() + timedelta(hours=24)
-        if bid is None:
-            # formatted_date = now.strftime('%Y-%m-%d %H:%M:%S')
-            bid = Bidding(item_id=id_, top_bid=top_bid, user_id = id_, bid_expire_date = now)
-            db.session.add(bid)
+        user_bid = db.engine.execute("SELECT * FROM bidding WHERE item_id = ? and user_id = ?", (id_, current_user.user_id)).first()
+        
+        now = datetime.now() 
+       
+       #First bid from user 
+        if user_bid is None:
+            
+            #INSERT BID 
+            db.engine.execute("INSERT INTO bidding (item_id, user_id, top_bid, bid_placed_date) VALUES (?, ?, ?, ?)", (id_, current_user.user_id, top_bid, now))
             db.session.commit()
-            print("Bid Committed")
-            # flash('Bid Placed!')
+    
+        #User already placed a bid so we just need to update it
         else:
-            cur.execute('UPDATE bidding SET top_bid = ?, bid_expire_date = ? WHERE item_id = ?', (top_bid, now, id_))
-            con.commit()
-            # flash('Bid Placed!')
+
+            #UPDATE BID 
+            db.engine.execute('UPDATE bidding SET top_bid = ?, bid_placed_date = ? WHERE item_id = ? and user_id = ?', (top_bid, now, id_, current_user.user_id))
+            db.session.commit()
+
+    #Delete the bid 
+    if request.method == 'POST' and 'remove_bid' in request.form:
+        
+        #DELETE BID 
+        db.session.execute(f'DELETE FROM bidding WHERE item_id = {id_} and user_id = {current_user.user_id}')
+        db.session.commit()
+
+        return redirect(url_for('item', id_=id_))
+
+        
+
 
     return render_template("item.html", item=item, item_reviews=item_reviews, item_rating=item_rating, top_bid=top_bid)
 
@@ -152,10 +178,17 @@ def buy(id_):
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
-    # if current_user.is_authenticated:
-    #     return redirect(url_for('dashboard'))
+    """
+    Cyrus 
+
+    This route should be the registration page,
+    After inputting all the data the database is updated with the new user
+
+    """
+    
     form = RegistrationForm()
     if form.validate_on_submit():
+        #INSERT USER
         user = User(email=form.email.data, password=form.password.data, username=form.username.data, address=form.address.data, first_name=form.first_name.data, last_name=form.last_name.data, city=form.city.data)
         db.session.add(user)
         db.session.commit()
@@ -166,9 +199,18 @@ def register():
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
+    """
+    Cyrus 
+
+    This route logs users in by checking if the email and password match
+    and then using flask login we log the user in 
+    """
     form = LoginForm()
     if form.validate_on_submit():
+        #USER QUERY 
+        user_1 = db.engine.execute("SELECT * FROM user WHERE email = ? and password = ?", (form.email.data, form.password.data)).first()
         user = db.session.query(User).filter_by(email=form.email.data, password=form.password.data).first()
+        
         if user:
             if user.is_banned:  # If this user is banned
                 return redirect(url_for('ban_page'))
@@ -185,10 +227,31 @@ def login():
 @app.route("/delete", methods=['GET', 'POST'])
 def delete():
     if current_user.is_authenticated:
+        #DELETE USER
         cur.execute('DELETE FROM user WHERE user_id = ?',(str(current_user.user_id)))
         con.commit()
 
     return redirect(url_for("index"))
+
+
+
+
+@app.route("/change_username", methods=['GET', 'POST'])
+@login_required
+def change_username():
+    """
+    Cyrus 
+
+    This function allows the user to change their username.
+    """
+
+    if request.method == 'POST':
+        #UPDATE USERNAME
+        cur.execute('UPDATE user SET username = ? WHERE user_id = ?',(request.form['change_username'], current_user.user_id))
+        con.commit()
+        return redirect(url_for('index'))
+        
+    return render_template('change_username.html')
 
 
 # TODO: polish admin homepage fix admin button 
