@@ -8,6 +8,10 @@ Alembic Commands:
     alembic upgrade head
 """
 
+"""
+Cyrus
+"""
+
 Base = declarative_base()
 
 class User(Base, UserMixin):

@@ -3,6 +3,10 @@ con = sqlite3.connect('data.db')
 
 cur = con.cursor()
 
+"""
+Cyrus 
+"""
+
 
 # cur.execute("INSERT INTO user VALUES (4, 'testing', 'test', 1, 0, '123 lane', 'test', 'test', 'city', 'test@gmail.com')")
 
