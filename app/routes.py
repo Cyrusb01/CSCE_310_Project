@@ -1,4 +1,6 @@
 from turtle import title
+
+from sqlalchemy import false
 from app import app, db
 from flask import render_template, url_for, flash, redirect, request
 from flask_login import login_user, login_required, user_logged_in, current_user, logout_user
@@ -8,11 +10,17 @@ from app.forms import LoginForm, RegistrationForm
 from app.models import User, Bidding, Item, Notification, Warnings, Reviews, Orders
 from datetime import datetime, timedelta
 
+import sqlite3
+con = sqlite3.connect('data.db', check_same_thread=False)
+cur = con.cursor()
+
+
 #create post item page
 @app.route('/postItem')
 @login_required
 def postItem():
     return render_template('postItem.html', title="Post an Item Here!")
+
 
 @app.route('/itemForm', methods=["POST"])
 def itemForm():
@@ -21,15 +29,9 @@ def itemForm():
     pic_url = request.form.get("pic_url")
     is_biddable = request.form.get("is_biddable")
 
-
     return render_template('itemForm.html')
 
 
-
-
-import sqlite3
-con = sqlite3.connect('data.db', check_same_thread=False)
-cur = con.cursor()
 # change
 @app.route('/')
 def index():
@@ -38,40 +40,39 @@ def index():
     grid of all items
     """
 
-    if current_user.is_authenticated:
-        if current_user.is_admin:
-            return redirect(url_for('index_admin'))
+    # if current_user.is_authenticated:
+    #     if current_user.is_admin:
+    #         return redirect(url_for('index_admin'))
     
     data = db.engine.execute("SELECT * FROM item")
     data_dict = [{x.item_id: [x.item_name.title(), x.item_desc, x.pic_url]} for x in data]
-    # print(data_dict)
-    cur.execute("SELECT * FROM notification WHERE [notification_id]=(SELECT MAX([date_made]) FROM notification)")
-    notif = cur.fetchone()
-    # print(notif)
-    # con.commit()
-    # notif = ["some", "some", "some", 'somet']
-    
-    return render_template('index.html', data=data_dict, notif=notif[2], date=notif[3], user=current_user)
-
-@app.route('/a')
-def index_admin():
-    """
-    This route should be the main page for admins, 
-    grid of all items
-    """
-
-    data = db.engine.execute("SELECT * FROM item")
-    data_dict = [{x.item_id: [x.item_name.title(), x.item_desc, x.pic_url]} for x in data]
-    # print(data_dict)
     cur.execute("SELECT * FROM notification WHERE [date_made]=(SELECT MAX([date_made]) FROM notification)")
     notif = cur.fetchone()
+    valid_notif = True
+    if notif == None:
+        valid_notif = False
+        notif = ["", "", "", ""]
     
-    print(notif)
-    # con.commit()
-    # notif = ["some", "some", "some", 'somet']
-    
-    return render_template('index_admin.html', data=data_dict, notif=notif[2], date=notif[3], user=current_user)
+    return render_template('index.html', data=data_dict, notif=notif[2], date=notif[3], user=current_user, valid_notif=valid_notif)
 
+
+# @app.route('/a')
+# def index_admin():
+#     """
+#     This route should be the main page for admins, 
+#     grid of all items
+#     """
+
+#     data = db.engine.execute("SELECT * FROM item")
+#     data_dict = [{x.item_id: [x.item_name.title(), x.item_desc, x.pic_url]} for x in data]
+#     cur.execute("SELECT * FROM notification WHERE [date_made]=(SELECT MAX([date_made]) FROM notification)")
+#     notif = cur.fetchone()
+#     valid_notif = True
+#     if notif == None:
+#         valid_notif = False
+#         notif = ["", "", "", ""]
+    
+#     return render_template('index_admin.html', data=data_dict, notif=notif[2], date=notif[3], user=current_user, valid_notif=valid_notif)
 
 
 @app.route('/shop')
@@ -142,7 +143,6 @@ def buy(id_):
     return render_template('purchased.html')
 
 
-
 @app.route("/register", methods=['GET', 'POST'])
 def register():
     # if current_user.is_authenticated:
@@ -167,12 +167,13 @@ def login():
                 return redirect(url_for('ban_page'))
             else:
                 login_user(user, remember=True)
-                if user.is_admin:
-                    return redirect(url_for('index_admin'))
+                # if user.is_admin:
+                #     return redirect(url_for('index_admin'))
                 return redirect(url_for('index'))
         else:
             flash('Login Unsuccessful. Please check email and password', 'danger')
     return render_template('login.html', title='Login', form=form)
+
 
 @app.route("/delete", methods=['GET', 'POST'])
 def delete():
@@ -182,12 +183,14 @@ def delete():
 
     return redirect(url_for("index"))
 
+
 # TODO: polish admin homepage fix admin button 
 @app.route("/admin", methods=['GET', 'POST'])
 def admin():
     firstName = current_user.first_name
     lastName = current_user.last_name
     return render_template('admin.html', title='admin', firstName=firstName, lastName=lastName)
+
 
 @app.route("/ban_users", methods=['GET', 'POST'])
 def ban_users():
@@ -242,6 +245,7 @@ def ban_users():
         banned_user = [('dummy','Currently have no banned users')]    
     return render_template('banUsers.html', title='ban_users', banned_user = banned_user)
 
+
 @app.route("/notification", methods=['GET', 'POST'])
 def notification():
 
@@ -294,9 +298,11 @@ def notification():
     con.commit() 
     return render_template('notification.html', title='notification', notif_list=notif_list)
 
+
 @app.route("/warning", methods=['GET', 'POST'])
 def warning():
     return render_template('warning.html', title='warning')
+
 
 @app.route("/add_admin", methods=['GET', 'POST'])
 def add_admin():
@@ -348,6 +354,7 @@ def add_admin():
         admin = [('dummy','Currently have no admins')]     
     con.commit() 
     return render_template('addAdmin.html', title='add_admin', admin_list = admin)
+
 
 @app.route("/ban_page", methods=['GET', 'POST'])
 def ban_page():
