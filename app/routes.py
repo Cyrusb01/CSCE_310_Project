@@ -168,10 +168,10 @@ def buy(id_):
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
-    # if current_user.is_authenticated:
-    #     return redirect(url_for('dashboard'))
+    
     form = RegistrationForm()
     if form.validate_on_submit():
+        #INSERT USER
         user = User(email=form.email.data, password=form.password.data, username=form.username.data, address=form.address.data, first_name=form.first_name.data, last_name=form.last_name.data, city=form.city.data)
         db.session.add(user)
         db.session.commit()
@@ -184,7 +184,10 @@ def register():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
+        #USER QUERY 
+        user_1 = db.engine.execute("SELECT * FROM user WHERE email = ? and password = ?", (form.email.data, form.password.data)).first()
         user = db.session.query(User).filter_by(email=form.email.data, password=form.password.data).first()
+        
         if user:
             if user.is_banned:  # If this user is banned
                 return redirect(url_for('ban_page'))
@@ -201,10 +204,23 @@ def login():
 @app.route("/delete", methods=['GET', 'POST'])
 def delete():
     if current_user.is_authenticated:
+        #DELETE USER
         cur.execute('DELETE FROM user WHERE user_id = ?',(str(current_user.user_id)))
         con.commit()
 
     return redirect(url_for("index"))
+
+@app.route("/change_username", methods=['GET', 'POST'])
+@login_required
+def change_username():
+
+    if request.method == 'POST':
+        #UPDATE USERNAME
+        cur.execute('UPDATE user SET username = ? WHERE user_id = ?',(request.form['change_username'], current_user.user_id))
+        con.commit()
+        return redirect(url_for('index'))
+        
+    return render_template('change_username.html')
 
 
 # TODO: polish admin homepage fix admin button 
