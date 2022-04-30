@@ -33,6 +33,10 @@ tr {
   margin: 0px auto;
 }
 
+td {
+  word-break: break-all;
+}
+
 .table {
   margin: 0px auto;
   float: none;
@@ -61,4 +65,16 @@ tr {
   position: relative;
   top: 3px;
   color: #ff0000;
+}
+
+#box {
+  position: absolute;
+  width: 900px;
+  height: 300px;
+  border-color: rgb(217, 108, 110);
+  /* background: rgb(108, 217, 162); */
+  bottom: 30%;
+  right: 25%;
+  left: 50%;
+  margin-left: -150px;
 }

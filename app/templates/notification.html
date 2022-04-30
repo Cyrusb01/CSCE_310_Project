@@ -2,161 +2,98 @@
 {%block content %}
 <h1>{% block admin_title %} Manage Notification {% endblock %}</h1>
 <p>
-  Notify everyone what's going on .. The latest updated notification will appear
-  in the main page
+  Notify everyone what's going on .. (The latest updated notification will
+  appear in the main page)
 </p>
+
+<!-- Top row -->
 <div class="row mt-3">
+  <!-- Add notification -->
   <div class="col-lg-4 col-md-6 mt-4 mb-4">
     <div class="card z-index-2">
-      <div
-        class="card-header p-0 position-relative mt-n4 mx-3 my-4 z-index-2 bg-transparent"
-      >
-        <!-- Add Form -->
-        <h3 class="text-center">Add Notification</h3>
-        <div>
-          <form class="px-4 py-3" action="notification" method="POST">
-            <div class="mb-3">
-              <label for="exampleDropdownFormEmail1" class="form-label"
-                >Description</label
-              >
-
-              <input type="text" name="notif_create" class="form-control" />
-            </div>
-            <!-- <div class="mb-3">
-              <label for="exampleDropdownFormPassword1" class="form-label"
-                >Description</label
-              >
-              <input
-                type="text"
-                name="notif_description"
-                class="form-control"
-                id="exampleDropdownFormPassword1"
-                placeholder="Description"
-              />
-            </div>
-            <div class="mb-3">
-              <label for="exampleFormControlTextarea1" class="form-label"
-                >Description</label
-              >
-              <textarea
-                class="form-control"
-                id="exampleFormControlTextarea1"
-                name="Desc_create"
-                rows="3"
-              ></textarea>
-            </div>
-            <div class="mb-3">
-              <label for="exampleFormControlTextarea3" class="form-label"
-                >Date made</label
-              >
-              <textarea
-                class="form-control"
-                id="exampleFormControlTextarea1"
-                rows="3"
-              ></textarea>
-            </div> -->
+      <h3 class="text-center mt-4">Add Notification</h3>
+      <!-- Add Form -->
+      <div>
+        <form class="px-4 py-3" action="notification" method="POST">
+          <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea
+              type="text"
+              name="notif_create"
+              class="form-control"
+            ></textarea>
+          </div>
+          <center>
             <button type="submit" class="btn btn-primary">Add</button>
-          </form>
-        </div>
+          </center>
+        </form>
       </div>
+      <!-- End Add Form -->
     </div>
   </div>
+
+  <!-- Delete Notification -->
+  <div class="col-lg-4 col-md-6 mt-4 mb-4">
+    <div class="card z-index-2">
+      <h3 class="text-center mt-4">Delete Notification</h3>
+      <!-- Delete Form -->
+      <div>
+        <form class="px-4 py-3" action="notification" method="POST">
+          <div class="mb-3">
+            <label for="exampleDropdownFormEmail1" class="form-label">ID</label>
+
+            <input type="text" name="notif_id" class="form-control" />
+          </div>
+          <center>
+            <input
+              type="submit"
+              class="btn btn-primary"
+              value="Delete"
+              name="delete"
+            />
+          </center>
+        </form>
+      </div>
+      <!-- End Delete Form -->
+    </div>
+  </div>
+
   <!-- Update Notification -->
   <div class="col-lg-4 col-md-6 mt-4 mb-4">
     <div class="card z-index-2">
-      <div
-        class="card-header p-0 position-relative mt-n4 mx-3 my-4 z-index-2 bg-transparent"
-      >
-        <!-- Update Form -->
-        <h3 class="text-center">Update notification</h3>
-        <div>
-          <form class="px-4 py-3" action="notification" method="POST">
-            <div class="mb-3">
-              <label for="exampleDropdownFormEmail1" class="form-label"
-                >ID</label
-              >
+      <h3 class="text-center mt-4">Update notification</h3>
+      <!-- Update Form -->
+      <div>
+        <form class="px-4 py-3" action="notification" method="POST">
+          <div class="mb-3">
+            <label class="form-label">ID</label>
 
-              <input type="text" name="update_notif_id" class="form-control" />
-            </div>
-            <div class="mb-3">
-              <label for="exampleDropdownFormEmail1" class="form-label"
-                >Description</label
-              >
-              <input type="text" name="notif_update" class="form-control" />
-            </div>
-            <!-- <div class="mb-3">
-              <label for="exampleFormControlTextarea2" class="form-label"
-                >Description</label
-              >
-              <textarea
-                class="form-control"
-                id="exampleFormControlTextarea2"
-                rows="3"
-              ></textarea>
-            </div>
-            <div class="mb-3">
-              <label for="exampleFormControlTextarea3" class="form-label"
-                >Date made</label
-              >
-              <textarea
-                class="form-control"
-                id="exampleFormControlTextarea1"
-                rows="3"
-              ></textarea>
-            </div>-->
+            <input type="text" name="update_notif_id" class="form-control" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea
+              type="text"
+              name="notif_update"
+              class="form-control"
+            ></textarea>
+          </div>
+          <center>
             <button type="submit" class="btn btn-primary">Update</button>
-          </form>
-        </div>
+          </center>
+        </form>
       </div>
-    </div>
-  </div>
-  <div class="col-lg-4 col-md-6 mt-4 mb-4">
-    <div class="card z-index-2">
-      <div
-        class="card-header p-0 position-relative mt-n4 mx-3 my-4 z-index-2 bg-transparent"
-      >
-        <!-- Delete Form -->
-        <h3 class="text-center">Delete Notification</h3>
-        <div>
-          <form class="px-4 py-3" action="notification" method="POST">
-            <div class="mb-3">
-              <label for="exampleDropdownFormEmail1" class="form-label"
-                >ID</label
-              >
-
-              <input type="text" name="notif_id" class="form-control" />
-            </div>
-            <!--<div class="mb-3">
-              <label for="exampleDropdownFormPassword1" class="form-label"
-                >ID</label
-              >
-              <input
-                type="password"
-                name="id"
-                class="form-control"
-                id="exampleDropdownFormPassword1"
-                placeholder="id"
-              />
-            </div>-->
-            <center>
-              <input
-                type="submit"
-                class="btn btn-primary"
-                value="Delete"
-                name="delete"
-              />
-            </center>
-          </form>
-        </div>
-      </div>
+      <!-- End Update Form -->
     </div>
   </div>
 </div>
+
+<!-- Second row: Notification list -->
 <div class="row mt-2">
   <h5>Current Notification List</h5>
   <table class="table table-striped mt-2">
     <thead class="table-danger">
-      <tr class="d-flex">
+      <tr>
         <th class="col-1">ID</th>
         <th class="col-5">Description</th>
         <th class="col-3">Admin</th>
@@ -165,11 +102,11 @@
     </thead>
     <tbody>
       {% for notif in notif_list %}
-      <tr class="d-flex">
+      <tr>
         <td class="col-1">{{notif[0]}}</td>
         <td class="col-5">{{notif[1]}}</td>
-        <td class="col-3">{{notif[3]}}</td>
-        <td class="col-3">{{notif[2]}} / {{notif[4]}}</td>
+        <td class="col-3">{{notif[2]}}</td>
+        <td class="col-3">{{notif[3]}} / {{notif[4]}}</td>
       </tr>
       {% endfor %}
     </tbody>

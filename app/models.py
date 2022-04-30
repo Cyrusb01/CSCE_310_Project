@@ -8,6 +8,10 @@ Alembic Commands:
     alembic upgrade head
 """
 
+"""
+Cyrus
+"""
+
 Base = declarative_base()
 
 class User(Base, UserMixin):
@@ -68,7 +72,7 @@ class Bidding(Base):
     item_id = Column(Integer, ForeignKey('item.item_id'), nullable=False)
     user_id = Column(Integer, ForeignKey('user.user_id'), nullable=False)
     top_bid = Column(Float, nullable=False)
-    bid_expire_date = Column(DateTime, nullable=False)
+    bid_placed_date = Column(DateTime, nullable=True)
 
     def __repr__(self):
         return f"<Bidding(bid_id={self.bid_id}, item_id={self.item_id}, user_id={self.user_id}, top_bid={self.top_bid}, bid_expire_date={self.bid_expire_date})"
@@ -93,3 +97,11 @@ class Reviews(Base):
 
     def __repr__(self):
         return f"<Reviews(review_id={self.review_id}, item_id={self.item_id}, user_id={self.user_id}, message={self.message}, rating={self.rating})"
+
+class Banned(Base):
+    __tablename__ = 'banned_users'
+    ban_pk = Column(Integer, primary_key=True)
+    user_id = Column(Integer,  ForeignKey('user.user_id'), nullable=False)
+
+    def __repr__(self):
+        return f"<Banned(ban_pk={self.ban_pk}, user_id={self.user_id})"

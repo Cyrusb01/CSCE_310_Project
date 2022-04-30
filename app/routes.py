@@ -4,10 +4,10 @@ from sqlalchemy import false
 from app import app, db
 from flask import render_template, url_for, flash, redirect, request
 from flask_login import login_user, login_required, user_logged_in, current_user, logout_user
-from app.forms import LoginForm, RegistrationForm
+from app.forms import LoginForm, RegistrationForm, PostItemForm
 
 
-from app.models import User, Bidding, Item, Notification, Warnings, Reviews, Orders
+from app.models import User, Bidding, Item, Notification, Warnings, Reviews, Orders, Banned
 from datetime import datetime, timedelta
 
 import sqlite3
@@ -24,28 +24,40 @@ def postItem():
 
 @app.route('/itemForm', methods=["POST"])
 def itemForm():
+    item_name = request.form.get("item_name")
     item_desc = request.form.get("item_desc")
     price = request.form.get("price")
     pic_url = request.form.get("pic_url")
     is_biddable = request.form.get("is_biddable")
+    booleancheck = 0
+    if  (is_biddable == "on"):
+        booleancheck = 1
 
+    item = Item(item_name = item_name,user_id = current_user.user_id,warning_id="000",item_desc = item_desc,price =price, pic_url=pic_url, is_biddable=booleancheck)
+    db.session.add(item)
+    db.session.commit()
     return render_template('itemForm.html')
 
+    
 
-# change
 @app.route('/')
 def index():
     """
+    Cyrus 
+
     This route should be the main page, 
     grid of all items
     """
 
-    # if current_user.is_authenticated:
-    #     if current_user.is_admin:
-    #         return redirect(url_for('index_admin'))
+   
     
     data = db.engine.execute("SELECT * FROM item")
     data_dict = [{x.item_id: [x.item_name.title(), x.item_desc, x.pic_url]} for x in data]
+    """
+    Patcharapa
+    
+    This sql command will select the latest notification from notification table and display it on the index page
+    """
     cur.execute("SELECT * FROM notification WHERE [date_made]=(SELECT MAX([date_made]) FROM notification)")
     notif = cur.fetchone()
     valid_notif = True
@@ -83,6 +95,11 @@ def shop():
 @app.route('/item/<id_>', methods=['GET', 'POST'])
 @login_required
 def item(id_):
+    """
+    Cyrus and someone 
+
+    This route shows the item page, equipped with a couple features
+    """
     item = db.engine.execute(f"SELECT * FROM item WHERE item_id = {id_}").first()
 
     item_reviews = []
@@ -107,24 +124,45 @@ def item(id_):
         db.session.commit()
         print("Added Review")
         return redirect(url_for('item', id_=id_))
-      
-    bid_data = db.engine.execute("SELECT * FROM bidding WHERE item_id = {}".format(id_)).first()
+    
+    #Cyrus 
+    #BID QUERY 
+    #find the top bid 
+    bid_data = db.engine.execute(f"SELECT * FROM bidding WHERE item_id = {id_} ORDER BY top_bid DESC;").first()
     top_bid = bid_data.top_bid if bid_data else 0
+
+    #This is if someone placed a bid 
     if request.method == 'POST' and 'place_bid' in request.form:
         top_bid = float(request.form['place_bid'])
-        bid = db.session.query(Bidding).filter_by(item_id= id_).first()
-        now = datetime.now() + timedelta(hours=24)
-        if bid is None:
-            # formatted_date = now.strftime('%Y-%m-%d %H:%M:%S')
-            bid = Bidding(item_id=id_, top_bid=top_bid, user_id = id_, bid_expire_date = now)
-            db.session.add(bid)
+        user_bid = db.engine.execute("SELECT * FROM bidding WHERE item_id = ? and user_id = ?", (id_, current_user.user_id)).first()
+        
+        now = datetime.now() 
+       
+       #First bid from user 
+        if user_bid is None:
+            
+            #INSERT BID 
+            db.engine.execute("INSERT INTO bidding (item_id, user_id, top_bid, bid_placed_date) VALUES (?, ?, ?, ?)", (id_, current_user.user_id, top_bid, now))
             db.session.commit()
-            print("Bid Committed")
-            # flash('Bid Placed!')
+    
+        #User already placed a bid so we just need to update it
         else:
-            cur.execute('UPDATE bidding SET top_bid = ?, bid_expire_date = ? WHERE item_id = ?', (top_bid, now, id_))
-            con.commit()
-            # flash('Bid Placed!')
+
+            #UPDATE BID 
+            db.engine.execute('UPDATE bidding SET top_bid = ?, bid_placed_date = ? WHERE item_id = ? and user_id = ?', (top_bid, now, id_, current_user.user_id))
+            db.session.commit()
+
+    #Delete the bid 
+    if request.method == 'POST' and 'remove_bid' in request.form:
+        
+        #DELETE BID 
+        db.session.execute(f'DELETE FROM bidding WHERE item_id = {id_} and user_id = {current_user.user_id}')
+        db.session.commit()
+
+        return redirect(url_for('item', id_=id_))
+
+        
+
 
     return render_template("item.html", item=item, item_reviews=item_reviews, item_rating=item_rating, top_bid=top_bid)
 
@@ -145,10 +183,17 @@ def buy(id_):
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
-    # if current_user.is_authenticated:
-    #     return redirect(url_for('dashboard'))
+    """
+    Cyrus 
+
+    This route should be the registration page,
+    After inputting all the data the database is updated with the new user
+
+    """
+    
     form = RegistrationForm()
     if form.validate_on_submit():
+        #INSERT USER
         user = User(email=form.email.data, password=form.password.data, username=form.username.data, address=form.address.data, first_name=form.first_name.data, last_name=form.last_name.data, city=form.city.data)
         db.session.add(user)
         db.session.commit()
@@ -159,9 +204,23 @@ def register():
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
+    """
+    Cyrus 
+
+    This route logs users in by checking if the email and password match
+    and then using flask login we log the user in 
+    """
     form = LoginForm()
     if form.validate_on_submit():
+        #USER QUERY 
+        user_1 = db.engine.execute("SELECT * FROM user WHERE email = ? and password = ?", (form.email.data, form.password.data)).first()
         user = db.session.query(User).filter_by(email=form.email.data, password=form.password.data).first()
+        
+        """
+        Patcharapa
+        
+        redirect to ban page if the user is in the banned users list
+        """
         if user:
             if user.is_banned:  # If this user is banned
                 return redirect(url_for('ban_page'))
@@ -178,22 +237,52 @@ def login():
 @app.route("/delete", methods=['GET', 'POST'])
 def delete():
     if current_user.is_authenticated:
+        #DELETE USER
         cur.execute('DELETE FROM user WHERE user_id = ?',(str(current_user.user_id)))
         con.commit()
 
     return redirect(url_for("index"))
 
 
+
+
+@app.route("/change_username", methods=['GET', 'POST'])
+@login_required
+def change_username():
+    """
+    Cyrus 
+
+    This function allows the user to change their username.
+    """
+
+    if request.method == 'POST':
+        #UPDATE USERNAME
+        cur.execute('UPDATE user SET username = ? WHERE user_id = ?',(request.form['change_username'], current_user.user_id))
+        con.commit()
+        return redirect(url_for('index'))
+        
+    return render_template('change_username.html')
+
+
 # TODO: polish admin homepage fix admin button 
 @app.route("/admin", methods=['GET', 'POST'])
 def admin():
-    firstName = current_user.first_name
-    lastName = current_user.last_name
-    return render_template('admin.html', title='admin', firstName=firstName, lastName=lastName)
+    """
+    Patcharapa
+    
+    contains all admin features in this page
+    """
+    username = current_user.username
+    return render_template('admin.html', title='admin', username=username)
 
 
 @app.route("/ban_users", methods=['GET', 'POST'])
 def ban_users():
+    """
+    Patcharapa
+    
+    ban and unban user, and show banned users list
+    """
     if request.method == 'POST':
         # ban user
         # if user is banned, he/she should not be able to access anything on the index page
@@ -201,21 +290,32 @@ def ban_users():
             # get the username from html input field
             username = request.form['username']
             # check if the user exists in the database
-            user_exist = cur.execute('SELECT * FROM user WHERE username=?',(username,)).fetchall()
-            if user_exist == []:
+            user_exist = cur.execute('SELECT * FROM user WHERE username=?',(username,)).fetchone()
+            
+            if user_exist is None:
                 flash("This username does not exist in our records, please check your spelling and try again")
                 return redirect(url_for('ban_users'))  
+            
+            # if user exist in the database then update user table and add this user to the banned_users table
             cur.execute('SELECT * FROM user WHERE username = ? AND is_banned = 1', (username, ))
-            print('check username', username)
             check_ban = cur.fetchone()
-            print('check ban', check_ban)
+            print("user banned: ", check_ban)
+            
             # check if this user is already banned
             if check_ban is not None:
                 flash('This user is already banned')
-                con.commit
             else:
+                # update user
                 cur.execute('UPDATE user SET is_banned = 1 WHERE username = ?', (username,))
                 con.commit()
+                # add user to banned_user
+                get_id = cur.execute("SELECT user_id FROM user where username = ?", (username,)).fetchone()
+                banned = Banned(user_id=get_id[0])
+                db.session.add(banned)
+                db.session.commit()
+                
+                
+                
         # unban user   
         elif 'username_unban' in request.form:
             # get the username from html input field
@@ -232,14 +332,19 @@ def ban_users():
             # check if this user exist in the banned users list
             if check_unban is not None:
                 flash('This user does not exist in the banned users list')
-                con.commit
             else:
+                # update user
                 cur.execute('UPDATE user SET is_banned = 0 WHERE username = ?', (username_unban,))
                 con.commit()
+                # delete user from banned_user
+                get_id = cur.execute("SELECT user_id FROM user where username = ?", (username_unban,)).fetchone()
+                cur.execute('DELETE from banned_users WHERE user_id = ?', (get_id[0],))
+                con.commit()
+                
         return redirect(url_for('ban_users'))      
             
     # show banned users list        
-    cur.execute("SELECT * FROM user WHERE is_banned = 1")
+    cur.execute("SELECT banned_users.user_id, user.username FROM banned_users INNER JOIN user ON banned_users.user_id=user.user_id")
     banned_user = cur.fetchall()
     if banned_user == []:
         banned_user = [('dummy','Currently have no banned users')]    
@@ -248,11 +353,15 @@ def ban_users():
 
 @app.route("/notification", methods=['GET', 'POST'])
 def notification():
-
+    """
+    Patcharapa
+    
+    add, update, delete notification
+    """
     now = datetime.now()
     if request.method == 'POST':
         # create notification
-        # TO DO: Add username id after the login issue is resolved
+        # TODO: Add username id after the login issue is resolved
         if current_user.is_authenticated:
             if 'notif_create' in request.form: 
                 notif_create = request.form['notif_create']
@@ -292,10 +401,13 @@ def notification():
                     flash("notification deleted")
                     redirect (url_for('notification'))
     # Display notification      
-    notif_list = cur.execute("SELECT notification.notification_id, notification.notif_desc, notification.date_made, user.username FROM notification INNER JOIN user ON notification.user_id=user.user_id").fetchall()
-    notif_list = [(row[0], row[1], row[2][:10], row[3], row[2][11:19]) for row in notif_list]
+    notif_list = cur.execute("SELECT notification.notification_id, notification.notif_desc, user.username, notification.date_made FROM notification INNER JOIN user ON notification.user_id=user.user_id").fetchall()
+    if notif_list == []:
+        notif_list = [('N/A','Currently have no notification','N/A','N/A','N/A')]  
+    else:
+        notif_list = [(row[0], row[1], row[2], row[3][:10], row[3][11:19]) for row in notif_list]
     # print(notif_list)
-    con.commit() 
+      
     return render_template('notification.html', title='notification', notif_list=notif_list)
 
 
@@ -306,6 +418,11 @@ def warning():
 
 @app.route("/add_admin", methods=['GET', 'POST'])
 def add_admin():
+    """
+    Patcharapa
+    
+    add/delete admin role
+    """
     if request.method == 'POST':
         # Add admin
         if 'username' in request.form:
@@ -358,4 +475,9 @@ def add_admin():
 
 @app.route("/ban_page", methods=['GET', 'POST'])
 def ban_page():
+    """
+    Patcharapa
+    
+    Display when user is in banned users list
+    """
     return render_template('banPage.html', title='ban_page')

@@ -1,8 +1,11 @@
 {% extends 'adminTemplate.html'%} {% block title %} Homepage {% endblock %}
 {%block content %}
-<h1>
-  {% block admin_title %} Welcome, Admin {{lastName}}, {{firstName}} {% endblock
-  %}
-</h1>
-<p>Homepage</p>
+
+<div id="box" class="container-fluid border">
+  <h1>
+    {% block admin_title %} Welcome, Admin {{username}} {% endblock %}
+    <p>You can manage admin</p>
+  </h1>
+</div>
+
 {% endblock %}
