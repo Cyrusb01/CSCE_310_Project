@@ -13,8 +13,9 @@
       crossorigin="anonymous"
     />
 
-    <title>Project</title>
+    <title>Manage Order Page</title>
   </head>
+
   <body>
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
@@ -28,7 +29,6 @@
         <a href="{{url_for('index')}}">
           <img class="navbar-brand ms-4" src = "https://w7.pngwing.com/pngs/1022/32/png-transparent-shopping-cart-icon-shopping-cart-logo-icon-shopping-cart-label-coffee-shop-shopping-mall.png" href="{{url_for('index')}}" width="50px"></img>
         </a>
-        
       </div>
       {% if user.is_authenticated %}
         <h5 class="text-nowrap my-auto" style="color: white">Welcome, {{user.username}}</h5>
@@ -47,26 +47,27 @@
               </a>
             </li> 
           {% endif %}
+          <li class="nav-item me-2">
+            <a
+              class="nav-link btn btn-outline-secondary"
+              href="{{ url_for('postItem') }}"
+              >Post Item
+            </a>
+          </li>
           {% if user.is_authenticated %}
-            <li class="nav-item me-2">
-              <a
-                class="nav-link btn btn-outline-secondary"
-                href="{{ url_for('postItem') }}"
-                >Post Item
-              </a>
-            </li>
-            <li class="nav-item me-2">
-              <a
-                class="nav-link btn btn-outline-secondary"
-                href="{{ url_for('manageOrders') }}"
-                >Manage Orders
-              </a>
-            </li>
-            <li class="nav-item me-2"> 
+            <li class="nav-item"> 
               <a
                 class="nav-link btn btn-outline-secondary"
                 href="{{ url_for('logout') }}"
                 >Logout
+              </a>
+            </li> 
+          {% else %}
+            <li class="nav-item me-2"> 
+              <a
+                class="nav-link btn btn-outline-secondary"
+                href="{{ url_for('login') }}"
+                >Sign In / Sign Up
               </a>
             </li> 
             <li class="nav-item"> 
@@ -76,45 +77,65 @@
                 >Delete Account
               </a>
             </li>
-          {% else %}
-            <li class="nav-item"> 
-              <a
-                class="nav-link btn btn-outline-secondary"
-                href="{{ url_for('login') }}"
-                >Sign In / Sign Up
-              </a>
-            </li> 
           {% endif %}
         </ul>
       </div>
     </nav>
+		
+		<div class="row mt-4 w-75 mx-auto">
+			<h1 class="mb-4">Manage Past Orders</h1>
+			<!-- Left side (Order list) -->
+			<div class="col-lg-6 col-md-6">
+				<h5 class="custom">Past Orders</h5>
+				<table class="table table-striped">
+					<thead class="table-primary">
+						<tr>
+							<th class="col-2">Item ID</th>
+							<th class="col-10">Item Name</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for order in orders %}
+						<tr>
+							<td class="col-2">{{order[0]}}</td>
+							<td class="col-10">{{order[1]}}</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
 
-    <!-- Notification -->
-    {% if valid_notif %}
-      <div class="row mt-5 mx-auto">
-        <div class="col-12 d-flex justify-content-center">
-          <h3>Notification: {{notif}}</h3>
-        </div>
-      </div>
-    {% else %}
-      <div class="pt-5">
-      </div>
-    {% endif %}
+			<!-- Right side (input boxes) -->
+			<div class="col-lg-6 col-md-6">
+				<!-- Gift item box -->
+				<div class="card mb-3 px-3 py-4">
+					<h2 class="text-center">Gift Item to Another User</h2>
+					<form class="px-4 py-2" method="POST">
+						<label class="form-label">Username</label>
+						<input type="text" name="gift_username" class="form-control" />
 
-      <!-- Making image grid Should use python and jinja to just loop through all items-->
-        <div class="row mt-5">
-          {% for dict_item in data %}
-            {% for key, value in dict_item.items() %}
-              <div class="col-3 offset-1 mb-5">
-                <a href="{{url_for('item', id_ = key )}}">
-                  <img src= {{value[2]}} alt="phone" height="200" width="200" />
-                </a>
-                <h1>{{value[0]}}</h1>
-                <p>{{value[1]}}</p>
-              </div>
-            {% endfor %}
-          {% endfor %}
-        </div>
-    </div>
+						<label class="form-label mt-2">Item ID</label>
+						<input type="text" name="gift_item_id" class="form-control" />
+						
+						<div class="w-50 mx-auto">
+							<button type="submit" class="btn btn-primary mt-3 mx-auto w-100">Gift Item</button>
+						</div>
+					</form>
+				</div>
+
+				<!-- Cancel Order box -->
+				<div class="card mb-3 px-3 py-4">
+					<h2 class="text-center">Cancel Order</h2>
+					<form class="px-4 py-2" method="POST">
+						<label class="form-label">Item ID</label>
+            <input type="text" name="cancel_item_id" class="form-control"/>
+						<div class="w-50 mx-auto">
+							<button type="submit" class="btn btn-danger mt-3 mx-auto w-100">Cancel Order</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
   </body>
 </html>

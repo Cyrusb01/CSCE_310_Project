@@ -33,7 +33,7 @@ def itemForm():
     if  (is_biddable == "on"):
         booleancheck = 1
 
-    item = Item(item_name = item_name,user_id = current_user.user_id,warning_id="000",item_desc = item_desc,price =price, pic_url=pic_url, is_biddable=booleancheck)
+    item = Item(item_name = item_name, user_id = current_user.user_id, warning_id="000", item_desc = item_desc, price =price, pic_url=pic_url, is_biddable=booleancheck)
     db.session.add(item)
     db.session.commit()
     return render_template('itemForm.html')
@@ -462,3 +462,39 @@ def ban_page():
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
+
+@app.route("/manageOrders", methods=['GET', 'POST'])
+@login_required
+def manageOrders():
+    """
+    Michael
+
+    Allow users to gift items to other users and cancel orders
+    """
+
+    if request.method == 'POST':
+        # Handle gifting item to another user
+        if 'gift_username' in request.form:
+            # update
+            pass
+
+        # handle cancelling item order
+        if 'cancel_item_id' in request.form:
+            # delete
+            pass
+    
+    # display list of past orders
+    # cur.execute("SELECT * FROM order")
+    # orders = db.engine.execute("SELECT * FROM order")
+    cur.execute("SELECT item_id FROM order WHERE user_id = 1")
+    ordered_item_ids = cur.fetchall()
+    orders = []
+    for item_id in ordered_item_ids:
+        cur.execute("SELECT item_name FROM item WHERE item_id = ?", item_id)
+        orders += [item_id, cur.fetchone()]
+    if orders == []:
+        orders = [[1, "New iphone"]]
+    print("Orders:", orders)
+    
+    return render_template('manageOrders.html', user=current_user, orders=orders)
