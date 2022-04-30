@@ -256,28 +256,6 @@
       </div>
     </nav>
 
-    <!-- Search Bar -->
-    <!-- <div class="row mt-5 justify-content-center mx-auto">
-      <div class="col-12 d-flex justify-content-center" style="width: 35%">
-        <div class="input-group">
-          <input
-            type="search"
-            class="form-control"
-            id="searchbar"
-            placeholder="Search"
-          />
-          <button
-            class="btn btn-outline-secondary"
-            type="button"
-            id="searchbutton"
-          >
-            Search
-            <!-- <i class="search-icon fa-solid fa-magnifying-glass" styles="font-size: 1.4em"></i> -->
-          <!-- </button>
-        </div>
-      </div>
-    </div> -->
-
     <!-- Item Section -->
     <div id="item-section" class="row mt-5 w-75 mx-auto">
       <!-- Item Picture -->
@@ -295,16 +273,6 @@
 
         <h1 class="display-5">{{item.item_name}}</h1>
         <h4 class="">${{item.price}}</h4>
-        <h5 class="">Top Bid: ${{top_bid}} </h5>
-
-        <div class = "col-6">
-          <form class="" method="POST">
-          <div class="mb-4 input-group">
-            <input type="text" name="place_bid" class="form-control"/>
-            <button type="submit" class="btn btn-primary">Place Bid</button>
-          </form>
-          </div>
-        </div>
 
         <div class="d-flex mb-2">
           <i class="" data-star="{{item_rating}}"></i>
@@ -317,6 +285,17 @@
               See Reviews
             </button>
           </a>
+        </div>
+
+        <!-- Bid Section -->
+        <h5 class="">Top Bid: ${{top_bid}} </h5>
+        <div class = "col-6">
+          <form class="" method="POST">
+          <div class="mb-2 input-group">
+            <input type="text" name="place_bid" class="form-control"/>
+            <button type="submit" class="btn btn-primary">Place Bid</button>
+          </form>
+          </div>
         </div>
 
         <form method="post" action = "{{ url_for('buy', id_ = item.item_id) }}"  >
