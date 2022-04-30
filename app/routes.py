@@ -272,9 +272,8 @@ def admin():
     
     contains all admin features in this page
     """
-    firstName = current_user.first_name
-    lastName = current_user.last_name
-    return render_template('admin.html', title='admin', firstName=firstName, lastName=lastName)
+    username = current_user.username
+    return render_template('admin.html', title='admin', username=username)
 
 
 @app.route("/ban_users", methods=['GET', 'POST'])
