@@ -31,7 +31,7 @@
         
       </div>
       {% if user.is_authenticated %}
-        <h5 class="text-nowrap" style="color: white">Welcome, {{user.username}}</h5>
+        <h5 class="text-nowrap my-auto" style="color: white">Welcome, {{user.username}}</h5>
       {% endif %}
       <div
         class="collapse navbar-collapse col-9 me-4"
@@ -47,28 +47,37 @@
               </a>
             </li> 
           {% endif %}
-          <li class="nav-item me-2"> 
+          <li class="nav-item me-2">
             <a
               class="nav-link btn btn-outline-secondary"
-              href="{{ url_for('delete') }}"
-              >Delete Account
+              href="{{ url_for('postItem') }}"
+              >Post Item
             </a>
           </li>
-          <li class="nav-item me-2"> 
-            <a
-              class="nav-link btn btn-outline-secondary"
-              href="{{ url_for('login') }}"
-              >Sign In / Sign Up
-            </a>
-          </li> 
-          <li class="nav-item ">
+          {% if user.is_authenticated %}
+            <li class="nav-item"> 
               <a
                 class="nav-link btn btn-outline-secondary"
-                href="{{ url_for('postItem') }}"
-                >Post Item
+                href="{{ url_for('logout') }}"
+                >Logout
+              </a>
+            </li> 
+          {% else %}
+            <li class="nav-item me-2"> 
+              <a
+                class="nav-link btn btn-outline-secondary"
+                href="{{ url_for('login') }}"
+                >Sign In / Sign Up
+              </a>
+            </li> 
+            <li class="nav-item"> 
+              <a
+                class="nav-link btn btn-outline-secondary"
+                href="{{ url_for('delete') }}"
+                >Delete Account
               </a>
             </li>
-
+          {% endif %}
         </ul>
       </div>
     </nav>
@@ -77,7 +86,7 @@
     {% if valid_notif %}
       <div class="row mt-5 mx-auto">
         <div class="col-12 d-flex justify-content-center">
-          <p>Notification: {{notif}}</p>
+          <h3>Notification: {{notif}}</h3>
         </div>
       </div>
     {% else %}

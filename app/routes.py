@@ -19,7 +19,7 @@ cur = con.cursor()
 @app.route('/postItem')
 @login_required
 def postItem():
-    return render_template('postItem.html', title="Post an Item Here!")
+    return render_template('postItem.html', title="Post an Item Here!", user=current_user)
 
 
 @app.route('/itemForm', methods=["POST"])
@@ -40,7 +40,7 @@ def itemForm():
 
     
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
     """
     Cyrus 
@@ -48,11 +48,9 @@ def index():
     This route should be the main page, 
     grid of all items
     """
-
-   
-    
     data = db.engine.execute("SELECT * FROM item")
     data_dict = [{x.item_id: [x.item_name.title(), x.item_desc, x.pic_url]} for x in data]
+
     """
     Patcharapa
     
@@ -66,25 +64,6 @@ def index():
         notif = ["", "", "", ""]
     
     return render_template('index.html', data=data_dict, notif=notif[2], date=notif[3], user=current_user, valid_notif=valid_notif)
-
-
-# @app.route('/a')
-# def index_admin():
-#     """
-#     This route should be the main page for admins, 
-#     grid of all items
-#     """
-
-#     data = db.engine.execute("SELECT * FROM item")
-#     data_dict = [{x.item_id: [x.item_name.title(), x.item_desc, x.pic_url]} for x in data]
-#     cur.execute("SELECT * FROM notification WHERE [date_made]=(SELECT MAX([date_made]) FROM notification)")
-#     notif = cur.fetchone()
-#     valid_notif = True
-#     if notif == None:
-#         valid_notif = False
-#         notif = ["", "", "", ""]
-    
-#     return render_template('index_admin.html', data=data_dict, notif=notif[2], date=notif[3], user=current_user, valid_notif=valid_notif)
 
 
 @app.route('/shop')
@@ -161,10 +140,7 @@ def item(id_):
 
         return redirect(url_for('item', id_=id_))
 
-        
-
-
-    return render_template("item.html", item=item, item_reviews=item_reviews, item_rating=item_rating, top_bid=top_bid)
+    return render_template("item.html", item=item, item_reviews=item_reviews, item_rating=item_rating, top_bid=top_bid, user=current_user)
 
 
 @app.route('/buy/<id_>', methods=['GET', 'POST'])
@@ -481,3 +457,8 @@ def ban_page():
     Display when user is in banned users list
     """
     return render_template('banPage.html', title='ban_page')
+
+@app.route("/logout")
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
