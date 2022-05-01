@@ -145,6 +145,16 @@ def item(id_):
         
         return redirect(url_for('item', id_=id_))
 
+    if request.method == 'POST' and 'updateReviewButton' in request.form:
+        review_id = request.form['updateReviewButton']
+        new_review_desc = request.form['newReviewText']
+        new_review_rating = request.form['newReviewRating']
+
+        cur.execute('UPDATE review SET message = ?, rating = ? WHERE review_id = ?', (new_review_desc, new_review_rating, review_id))
+        con.commit()
+        
+        return redirect(url_for('item', id_=id_))
+
     return render_template("item.html", item=item, item_reviews=item_reviews, item_rating=item_rating, top_bid=top_bid, user=current_user)
 
 

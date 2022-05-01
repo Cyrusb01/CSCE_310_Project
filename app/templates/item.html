@@ -345,9 +345,15 @@
               <form method="POST">
                 <div class="row card-body align-middle">
                   <p class="card-text my-4 col-10">{{review['message']}}</p>
-                  <button type="submit" class="btn my-auto col-1" name="edit_review_button" value="{{review['review_id']}}" >
+
+
+
+                  <a class="btn my-auto col-1" data-bs-toggle="collapse" href="#collapseExample{{review['review_id']}}" role="button" aria-expanded="false" aria-controls="collapseExample">
                     <i class="fas fa-edit fs-5"></i>
-                  </button>
+                  </a>
+                  
+
+
                   <button type="submit" class="btn my-auto col-1" name="delete_review_button" value="{{review['review_id']}}" >
                     <i class="fa-solid fa-xmark fs-4"></i>
                   </button>
@@ -361,12 +367,47 @@
             </div>
           </div>
         </div>
+        <div class="collapse w-75 mx-auto mb-4" id="collapseExample{{review['review_id']}}">
+          <div class="card card-body">
+            <form method="POST">
+              <h5 class="col-2 mx-auto">Edit Review</h5>
+              <div class="d-flex justify-content-center">
+                <select class="form-select my-auto me-3 w-auto" name="newReviewRating">
+                  <option selected>New Rating</option>
+                  <option value="0">0</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+                <textarea
+                  class="form-control w-75"
+                  style="width: 60%"
+                  name="newReviewText"
+                  rows="4"
+                  placeholder="New Review Description"
+                ></textarea>
+              </div>
+              <div class="row">
+                <button
+                  class="btn btn-primary w-25 mt-3 mx-auto"
+                  type="submit"
+                  name="updateReviewButton"
+                  value="{{review['review_id']}}"
+                >
+                  Update Review
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
       {% endfor %}
       <form method="POST">
         <h3 class="text-center mt-5">Leave a Review</h3>
         <div class="d-flex text-center justify-content-center">
-          <select class="custom-select my-auto me-3" name="reviewRating">
+          <select class="form-select my-auto me-3 w-auto" name="reviewRating">
             <option selected>Rating</option>
             <option value="0">0</option>
             <option value="1">1</option>
