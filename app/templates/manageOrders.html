@@ -90,7 +90,7 @@
 				<table class="table table-striped">
 					<thead class="table-primary">
 						<tr>
-							<th class="col-2">Item ID</th>
+							<th class="col-2">Order ID</th>
 							<th class="col-10">Item Name</th>
 						</tr>
 					</thead>
@@ -107,18 +107,18 @@
 
 			<!-- Right side (input boxes) -->
 			<div class="col-lg-6 col-md-6">
-				<!-- Gift item box -->
+				<!-- Gift Order box -->
 				<div class="card mb-3 px-3 py-4">
-					<h2 class="text-center">Gift Item to Another User</h2>
+					<h2 class="text-center">Gift Order to Another User</h2>
 					<form class="px-4 py-2" method="POST">
 						<label class="form-label">Username</label>
 						<input type="text" name="gift_username" class="form-control" />
 
-						<label class="form-label mt-2">Item ID</label>
-						<input type="text" name="gift_item_id" class="form-control" />
+						<label class="form-label mt-2">Order ID</label>
+						<input type="text" name="gift_order_id" class="form-control" />
 						
 						<div class="w-50 mx-auto">
-							<button type="submit" class="btn btn-primary mt-3 mx-auto w-100">Gift Item</button>
+							<button type="submit" name="submit_button" value="Gift Order" class="btn btn-primary mt-3 mx-auto w-100">Gift Item</button>
 						</div>
 					</form>
 				</div>
@@ -127,10 +127,10 @@
 				<div class="card mb-3 px-3 py-4">
 					<h2 class="text-center">Cancel Order</h2>
 					<form class="px-4 py-2" method="POST">
-						<label class="form-label">Item ID</label>
-            <input type="text" name="cancel_item_id" class="form-control"/>
+						<label class="form-label">Order ID</label>
+            <input type="text" name="cancel_order_id" class="form-control"/>
 						<div class="w-50 mx-auto">
-							<button type="submit" class="btn btn-danger mt-3 mx-auto w-100">Cancel Order</button>
+							<button type="submit" name="submit_button" value="Cancel Order" class="btn btn-danger mt-3 mx-auto w-100">Cancel Order</button>
 						</div>
 					</form>
 				</div>

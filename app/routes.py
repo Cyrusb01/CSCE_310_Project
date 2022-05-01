@@ -14,8 +14,7 @@ import sqlite3
 con = sqlite3.connect('data.db', check_same_thread=False)
 cur = con.cursor()
 
-
-#create post item page
+# create post item page
 @app.route('/postItem')
 @login_required
 def postItem():
@@ -30,7 +29,7 @@ def itemForm():
     pic_url = request.form.get("pic_url")
     is_biddable = request.form.get("is_biddable")
     booleancheck = 0
-    if  (is_biddable == "on"):
+    if (is_biddable == "on"):
         booleancheck = 1
 
     item = Item(item_name = item_name, user_id = current_user.user_id, warning_id="000", item_desc = item_desc, price =price, pic_url=pic_url, is_biddable=booleancheck)
@@ -38,7 +37,6 @@ def itemForm():
     db.session.commit()
     return render_template('itemForm.html')
 
-    
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -62,7 +60,7 @@ def index():
     if notif == None:
         valid_notif = False
         notif = ["", "", "", ""]
-    
+
     return render_template('index.html', data=data_dict, notif=notif[2], date=notif[3], user=current_user, valid_notif=valid_notif)
 
 
@@ -93,47 +91,46 @@ def item(id_):
     item_rating = 0
     for review in item_reviews:
         item_rating += review['rating']
-    
+
     if item_rating != 0:
         item_rating /= len(item_reviews)
-    
+
     if request.method == 'POST' and 'reviewText' in request.form:
         review = Reviews(item_id=id_, user_id=1, message=request.form['reviewText'], rating=request.form['reviewRating'])
         db.session.add(review)
         db.session.commit()
         print("Added Review")
         return redirect(url_for('item', id_=id_))
-    
+
     #Cyrus 
     #BID QUERY 
     #find the top bid 
     bid_data = db.engine.execute(f"SELECT * FROM bidding WHERE item_id = {id_} ORDER BY top_bid DESC;").first()
     top_bid = bid_data.top_bid if bid_data else 0
 
-    #This is if someone placed a bid 
+    # This is if someone placed a bid
     if request.method == 'POST' and 'place_bid' in request.form:
         top_bid = float(request.form['place_bid'])
         user_bid = db.engine.execute("SELECT * FROM bidding WHERE item_id = ? and user_id = ?", (id_, current_user.user_id)).first()
         
         now = datetime.now() 
        
-       #First bid from user 
+       # First bid from user
         if user_bid is None:
-            
             #INSERT BID 
             db.engine.execute("INSERT INTO bidding (item_id, user_id, top_bid, bid_placed_date) VALUES (?, ?, ?, ?)", (id_, current_user.user_id, top_bid, now))
             db.session.commit()
     
-        #User already placed a bid so we just need to update it
+        # User already placed a bid so we just need to update it
         else:
 
             #UPDATE BID 
             db.engine.execute('UPDATE bidding SET top_bid = ?, bid_placed_date = ? WHERE item_id = ? and user_id = ?', (top_bid, now, id_, current_user.user_id))
             db.session.commit()
 
-    #Delete the bid 
+    # Delete the bid
     if request.method == 'POST' and 'remove_bid' in request.form:
-        
+
         #DELETE BID 
         db.session.execute(f'DELETE FROM bidding WHERE item_id = {id_} and user_id = {current_user.user_id}')
         db.session.commit()
@@ -145,13 +142,13 @@ def item(id_):
 
 @app.route('/buy/<id_>', methods=['GET', 'POST'])
 def buy(id_):
-    
+
     if current_user.is_authenticated:
         bid_exist = cur.execute('SELECT * FROM bidding WHERE item_id=?',(id_)).fetchall()
         bid_id_ = 9999
         if bid_exist != []:
             bid_id_ = bid_exist[0][0]
-        bid = Orders(user_id=current_user.user_id, item_id=id_, bid_id =bid_id_ )
+        bid = Orders(user_id=current_user.user_id, item_id=id_, bid_id=bid_id_)
         db.session.add(bid)
         db.session.commit()
     return render_template('purchased.html')
@@ -166,10 +163,10 @@ def register():
     After inputting all the data the database is updated with the new user
 
     """
-    
+
     form = RegistrationForm()
     if form.validate_on_submit():
-        #INSERT USER
+        # INSERT USER
         user = User(email=form.email.data, password=form.password.data, username=form.username.data, address=form.address.data, first_name=form.first_name.data, last_name=form.last_name.data, city=form.city.data)
         db.session.add(user)
         db.session.commit()
@@ -213,13 +210,11 @@ def login():
 @app.route("/delete", methods=['GET', 'POST'])
 def delete():
     if current_user.is_authenticated:
-        #DELETE USER
+        # DELETE USER
         cur.execute('DELETE FROM user WHERE user_id = ?',(str(current_user.user_id)))
         con.commit()
 
     return redirect(url_for("index"))
-
-
 
 
 @app.route("/change_username", methods=['GET', 'POST'])
@@ -232,11 +227,11 @@ def change_username():
     """
 
     if request.method == 'POST':
-        #UPDATE USERNAME
+        # UPDATE USERNAME
         cur.execute('UPDATE user SET username = ? WHERE user_id = ?',(request.form['change_username'], current_user.user_id))
         con.commit()
         return redirect(url_for('index'))
-        
+
     return render_template('change_username.html')
 
 
@@ -245,7 +240,7 @@ def change_username():
 def admin():
     """
     Patcharapa
-    
+
     contains all admin features in this page
     """
     username = current_user.username
@@ -256,7 +251,7 @@ def admin():
 def ban_users():
     """
     Patcharapa
-    
+
     ban and unban user, and show banned users list
     """
     if request.method == 'POST':
@@ -289,8 +284,6 @@ def ban_users():
                 banned = Banned(user_id=get_id[0])
                 db.session.add(banned)
                 db.session.commit()
-                
-                
                 
         # unban user   
         elif 'username_unban' in request.form:
@@ -345,7 +338,7 @@ def notification():
                 db.session.add(notif)
                 db.session.commit()
                 flash("notification added")
-                redirect (url_for('notification'))
+                redirect(url_for('notification'))
                 print("test1")
             # Update Notification
             elif 'notif_update' in request.form:
@@ -375,7 +368,7 @@ def notification():
                     cur.execute('DELETE FROM notification WHERE notification_id=?', id)
                     con.commit()
                     flash("notification deleted")
-                    redirect (url_for('notification'))
+                    redirect(url_for('notification'))
     # Display notification      
     notif_list = cur.execute("SELECT notification.notification_id, notification.notif_desc, user.username, notification.date_made FROM notification INNER JOIN user ON notification.user_id=user.user_id").fetchall()
     if notif_list == []:
@@ -453,10 +446,11 @@ def add_admin():
 def ban_page():
     """
     Patcharapa
-    
+
     Display when user is in banned users list
     """
     return render_template('banPage.html', title='ban_page')
+
 
 @app.route("/logout")
 def logout():
@@ -475,26 +469,45 @@ def manageOrders():
 
     if request.method == 'POST':
         # Handle gifting item to another user
-        if 'gift_username' in request.form:
-            # update
-            pass
+        if request.form['submit_button'] == 'Gift Order':
+            gift_username = request.form['gift_username']
+            gift_order_id = request.form['gift_order_id']
+
+            # lookup user_id
+            gift_user = db.session.query(User).filter_by(username = gift_username).first()
+
+            # update order
+            order = db.session.query(Orders).filter_by(order_id = gift_order_id).one()
+            if order.user_id == current_user.user_id:
+                order.user_id = gift_user.user_id
+                db.session.commit()
+            # else:
+            #     flash("Incorrect Order ID, You did not order this item.", "danger")
+
+            return redirect(url_for('manageOrders'))
 
         # handle cancelling item order
-        if 'cancel_item_id' in request.form:
-            # delete
-            pass
-    
+        if request.form['submit_button'] == 'Cancel Order':
+            cancel_order_id = request.form['cancel_order_id']
+            
+            # delete order
+            order = db.session.query(Orders).filter_by(order_id = cancel_order_id)
+            print(order)
+
+            db.session.commit()
+
+            return redirect(url_for('manageOrders'))
     # display list of past orders
     # cur.execute("SELECT * FROM order")
-    # orders = db.engine.execute("SELECT * FROM order")
-    cur.execute("SELECT item_id FROM order WHERE user_id = 1")
-    ordered_item_ids = cur.fetchall()
-    orders = []
-    for item_id in ordered_item_ids:
-        cur.execute("SELECT item_name FROM item WHERE item_id = ?", item_id)
-        orders += [item_id, cur.fetchone()]
+    # orders = cur.fetchall()
+    orders = db.session.query(Orders).filter_by(user_id=current_user.user_id).all()
+    item_id_name = []
+    for order in orders:
+        cur.execute(f"SELECT item_name FROM item WHERE item_id = {order.item_id}")
+        item_name = cur.fetchone()[0]
+        item_id_name.append([order.order_id, item_name])
+
     if orders == []:
         orders = [[1, "New iphone"]]
-    print("Orders:", orders)
-    
-    return render_template('manageOrders.html', user=current_user, orders=orders)
+
+    return render_template('manageOrders.html', user=current_user, orders=item_id_name)
