@@ -2,8 +2,7 @@
 {%block content %}
 <h1>{% block admin_title %} Manage Warning{% endblock %}</h1>
 <p>
-  thop hugyufrystersr gugkjhh hop hugyufrystersr gugkj hop hugyufrystersr gugkj
-  hop hugyufrystersr gugkj hop hugyufrystersr gugkj
+  This page lets admins add a warning to a suspicious item 
 </p>
 <div class="row mt-4">
   <div class="col-lg-4 col-md-6 mt-4 mb-4">
@@ -14,7 +13,7 @@
         <!-- Add Form -->
         <h3 class="text-center">Add Warning</h3>
         <div>
-          <form class="px-4 py-3" action="" method="POST">
+          <form class="px-4 py-3" action="/warningForm" method="POST">
             <div class="mb-3">
               <label for="exampleDropdownFormEmail1" class="form-label"
                 >Title</label
@@ -22,29 +21,19 @@
 
               <input
                 type="text"
-                name="title"
+                name="add_warning_title"
                 class="form-control"
                 placeholder="Title"
               />
             </div>
-            <!-- <div class="mb-3">
-              <label for="exampleDropdownFormPassword1" class="form-label"
-                >Description</label
-              >
-              <input
-                type="text"
-                name="notif_description"
-                class="form-control"
-                id="exampleDropdownFormPassword1"
-                placeholder="Description"
-              />
-            </div> -->
+            
             <div class="mb-3">
               <label for="exampleFormControlTextarea1" class="form-label"
                 >Description</label
               >
               <textarea
                 class="form-control"
+                name="add_warning_desc"
                 id="exampleFormControlTextarea1"
                 rows="3"
               ></textarea>

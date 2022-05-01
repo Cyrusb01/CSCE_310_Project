@@ -398,9 +398,19 @@ def notification():
     return render_template('notification.html', title='notification', notif_list=notif_list)
 
 
-@app.route("/warning", methods=['GET', 'POST'])
+@app.route("/warning")
 def warning():
+    
     return render_template('warning.html', title='warning')
+
+@app.route('/warningForm', methods=["POST"])
+def warningForm():
+   #add_warning_title = request.form.get("add_warning_title")
+    warning_desc = request.form.get("add_warning_desc")
+    warning = Warnings( warning_desc = warning_desc)
+    db.session.add(warning)
+    db.session.commit()
+    return render_template('warningForm.html')
 
 
 @app.route("/add_admin", methods=['GET', 'POST'])
