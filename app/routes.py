@@ -96,7 +96,7 @@ def item(id_):
         item_rating /= len(item_reviews)
 
     if request.method == 'POST' and 'reviewText' in request.form:
-        review = Reviews(item_id=id_, user_id=1, message=request.form['reviewText'], rating=request.form['reviewRating'])
+        review = Reviews(item_id=id_, user_id=current_user.user_id, message=request.form['reviewText'], rating=request.form['reviewRating'])
         db.session.add(review)
         db.session.commit()
         print("Added Review")
@@ -135,6 +135,14 @@ def item(id_):
         db.session.execute(f'DELETE FROM bidding WHERE item_id = {id_} and user_id = {current_user.user_id}')
         db.session.commit()
 
+        return redirect(url_for('item', id_=id_))
+
+    if request.method == 'POST' and 'delete_review_button' in request.form:
+        review_id = request.form['delete_review_button']
+
+        cur.execute(f"DELETE FROM review WHERE review_id = {review_id}")
+        con.commit()
+        
         return redirect(url_for('item', id_=id_))
 
     return render_template("item.html", item=item, item_reviews=item_reviews, item_rating=item_rating, top_bid=top_bid, user=current_user)
@@ -477,8 +485,8 @@ def manageOrders():
             gift_user = db.session.query(User).filter_by(username = gift_username).first()
 
             # update order
-            order = db.session.query(Orders).filter_by(order_id = gift_order_id).one()
-            if order.user_id == current_user.user_id:
+            order = db.session.query(Orders).filter_by(order_id = gift_order_id).first()
+            if not order is None and order.user_id == current_user.user_id:
                 order.user_id = gift_user.user_id
                 db.session.commit()
             # else:
@@ -491,15 +499,14 @@ def manageOrders():
             cancel_order_id = request.form['cancel_order_id']
             
             # delete order
-            order = db.session.query(Orders).filter_by(order_id = cancel_order_id)
-            print(order)
-
-            db.session.commit()
+            order = db.session.query(Orders).filter_by(order_id = cancel_order_id).first()
+            if not order is None and order.user_id == current_user.user_id:
+                db.session.delete(order)
+                db.session.commit()
 
             return redirect(url_for('manageOrders'))
+
     # display list of past orders
-    # cur.execute("SELECT * FROM order")
-    # orders = cur.fetchall()
     orders = db.session.query(Orders).filter_by(user_id=current_user.user_id).all()
     item_id_name = []
     for order in orders:

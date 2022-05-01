@@ -14,10 +14,10 @@
     />
 
     <!-- Font Awesome -->
-    <!-- <script
+    <script
       src="https://kit.fontawesome.com/ccae617d2b.js"
       crossorigin="anonymous"
-    ></script> -->
+    ></script>
 
     <style>
       /* Rating stars */
@@ -341,9 +341,23 @@
                 <i class="" data-star="{{review['rating']}}"></i>
               </div>
             <div class="col-md-8">
-              <div class="card-body">
+              {% if current_user.user_id == review['user_id'] %}
+              <form method="POST">
+                <div class="row card-body align-middle">
+                  <p class="card-text my-4 col-10">{{review['message']}}</p>
+                  <button type="submit" class="btn my-auto col-1" name="edit_review_button" value="{{review['review_id']}}" >
+                    <i class="fas fa-edit fs-5"></i>
+                  </button>
+                  <button type="submit" class="btn my-auto col-1" name="delete_review_button" value="{{review['review_id']}}" >
+                    <i class="fa-solid fa-xmark fs-4"></i>
+                  </button>
+                </div>
+              </form>
+              {% else %}
+              <div class="card-body align-middle">
                 <p class="card-text my-4">{{review['message']}}</p>
               </div>
+              {% endif %}
             </div>
           </div>
         </div>
