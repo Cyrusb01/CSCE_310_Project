@@ -326,6 +326,9 @@
           </form>
           </div>
         </div>
+        <form class="" method="POST"> 
+            <button type="submit" name="remove_bid" class="btn btn-primary mb-2">Remove Bid</button>
+          </form>
 
         <form method="post" action = "{{ url_for('buy', id_ = item.item_id) }}"  >
           <button class="btn btn-outline-primary" type="submit" id="buybutton">
