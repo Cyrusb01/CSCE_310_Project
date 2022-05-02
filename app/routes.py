@@ -386,7 +386,7 @@ def notification():
             if 'notif_create' in request.form: 
                 notif_create = request.form['notif_create']
                 # check if notification exists
-                check_duplicate = cur.execute('SELECT * FROM notification ORDER BY notification_id DESC LIMIT 1').fetchone()
+                check_duplicate = cur.execute('SELECT * FROM notification ORDER BY date_made DESC LIMIT 1').fetchone()
                 desc = check_duplicate[2]
                 if desc == notif_create:
                     flash("This notification is already exist")
@@ -397,14 +397,13 @@ def notification():
                 db.session.commit()
                 flash("notification added")
                 redirect(url_for('notification'))
-                print("test1")
+               
             # Update Notification
             elif 'notif_update' in request.form:
-                print("test")
                 notif_update = request.form['notif_update']
                 id = request.form['update_notif_id']
                 # check if notification exists
-                check_duplicate_update = cur.execute('SELECT * FROM notification ORDER BY notification_id DESC LIMIT 1').fetchone()
+                check_duplicate_update = cur.execute('SELECT * FROM notification ORDER BY date_made DESC LIMIT 1').fetchone()
                 desc_update = check_duplicate_update[2]
                 if desc_update == notif_update:
                     flash("This notification is already exist")
