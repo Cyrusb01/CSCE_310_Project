@@ -1,6 +1,6 @@
 from turtle import title
 
-from sqlalchemy import false
+from sqlalchemy import desc, false
 from app import app, db
 from flask import render_template, url_for, flash, redirect, request
 from flask_login import login_user, login_required, user_logged_in, current_user, logout_user
@@ -355,10 +355,16 @@ def notification():
     now = datetime.now()
     if request.method == 'POST':
         # create notification
-        # TODO: Add username id after the login issue is resolved
         if current_user.is_authenticated:
             if 'notif_create' in request.form: 
                 notif_create = request.form['notif_create']
+                # check if notification exists
+                check_duplicate = cur.execute('SELECT * FROM notification ORDER BY notification_id DESC LIMIT 1').fetchone()
+                desc = check_duplicate[2]
+                if desc == notif_create:
+                    flash("This notification is already exist")
+                    return redirect(url_for('notification'))
+                
                 notif = Notification(user_id=current_user.user_id, notif_desc=notif_create, date_made = now)
                 db.session.add(notif)
                 db.session.commit()
@@ -370,6 +376,12 @@ def notification():
                 print("test")
                 notif_update = request.form['notif_update']
                 id = request.form['update_notif_id']
+                # check if notification exists
+                check_duplicate_update = cur.execute('SELECT * FROM notification ORDER BY notification_id DESC LIMIT 1').fetchone()
+                desc_update = check_duplicate_update[2]
+                if desc_update == notif_update:
+                    flash("This notification is already exist")
+                    return redirect(url_for('notification'))
                 # check if id exists in the database
                 id_check = cur.execute('SELECT * FROM notification WHERE notification_id=?',(id,)).fetchone()
                 if id_check is None:
@@ -379,7 +391,7 @@ def notification():
                     cur.execute('UPDATE notification SET (notif_desc, date_made)=(?,?) WHERE notification_id=?', (notif_update, now, id,))
                     con.commit()
                     flash("notification updated")
-                    redirect (url_for('notification'))
+                    return redirect (url_for('notification'))
             # Delete Notification
             elif 'delete' in request.form:
                 print("test delete")
@@ -393,7 +405,7 @@ def notification():
                     cur.execute('DELETE FROM notification WHERE notification_id=?', id)
                     con.commit()
                     flash("notification deleted")
-                    redirect(url_for('notification'))
+                    return redirect(url_for('notification'))
     # Display notification      
     notif_list = cur.execute("SELECT notification.notification_id, notification.notif_desc, user.username, notification.date_made FROM notification INNER JOIN user ON notification.user_id=user.user_id").fetchall()
     if notif_list == []:
