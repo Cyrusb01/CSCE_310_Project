@@ -355,6 +355,7 @@ def ban_users():
             # check if this user exist in the banned users list
             if check_unban is not None:
                 flash('This user does not exist in the banned users list')
+                return redirect(url_for('ban_users'))
             else:
                 # update user
                 cur.execute('UPDATE user SET is_banned = 0 WHERE username = ?', (username_unban,))
@@ -362,9 +363,7 @@ def ban_users():
                 # delete user from banned_user
                 get_id = cur.execute("SELECT user_id FROM user where username = ?", (username_unban,)).fetchone()
                 cur.execute('DELETE from banned_users WHERE user_id = ?', (get_id[0],))
-                con.commit()
-                
-        return redirect(url_for('ban_users'))      
+                con.commit()   
             
     # show banned users list        
     cur.execute("SELECT banned_users.user_id, user.username FROM banned_users INNER JOIN user ON banned_users.user_id=user.user_id")
