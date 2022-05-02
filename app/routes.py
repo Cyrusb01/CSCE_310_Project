@@ -159,7 +159,6 @@ def item(id_):
             db.engine.execute('UPDATE bidding SET top_bid = ?, bid_placed_date = ? WHERE item_id = ? and user_id = ?', (top_bid, now, id_, current_user.user_id))
             db.session.commit()
 
-    # Michael
     # Delete the bid
     if request.method == 'POST' and 'remove_bid' in request.form:
         #DELETE BID 
@@ -168,6 +167,7 @@ def item(id_):
 
         return redirect(url_for('item', id_=id_))
 
+    # Michael
     if request.method == 'POST' and 'delete_review_button' in request.form:
         # Delete Review
         review_id = request.form['delete_review_button']
