@@ -292,16 +292,14 @@
       <!-- Item Text -->
       <div class="col-6">
         
-        <h1 class="display-5">{{warning.warning_desc}}</h1> 
-        <a href="{{ url_for('deleteItemForm', my_var=item.item_id) }}">Delete Item</a>
-        <small>only works if you're the same user that posted item:</small>
+        
         <!-- <form class="" action="/deleteItemForm" method="POST">
           <div class="">
             <button type="submit" class="btn btn-primary">Delete this Item</button>
           </form>
           </div> -->
 
-        <h1 class="display-5">{{item.item_name}}</h1>
+        <h1 class="display-5">{{item.item_name.title()}}</h1>
         <h4 class="">${{item.price}}</h4>
 
         <div class="d-flex mb-2">
@@ -336,7 +334,11 @@
           </button>
         </form>
         <p class="w-75 mt-3">{{item.item_desc}}</p>
+        <h4 class="display-7">{{warning.warning_desc}}</h4> 
+        <a href="{{ url_for('deleteItemForm', my_var=item.item_id) }}">Delete Item</a>
+        <small>only works if you're the same user that posted item:</small>
       </div>
+      
     </div>
 
     <!-- Review Section -->
