@@ -306,14 +306,15 @@ def ban_users():
     """
     username = current_user.username
     if request.method == 'POST':
+        
         # ban user
         # if user is banned, he/she should not be able to access anything on the index page
         if 'username' in request.form:
             # get the username from html input field
             username = request.form['username']
+           
             # check if the user exists in the database
             user_exist = cur.execute('SELECT * FROM user WHERE username=?',(username,)).fetchone()
-            
             if user_exist is None:
                 flash("This username does not exist in our records, please check your spelling and try again")
                 return redirect(url_for('ban_users'))  
@@ -340,15 +341,18 @@ def ban_users():
         elif 'username_unban' in request.form:
             # get the username from html input field
             username_unban = request.form['username_unban']
+            
             # check if the user exists in the database
             user_exist = cur.execute('SELECT * FROM user WHERE username=?',(username_unban,)).fetchall()
             if user_exist == []:
                 flash("This username does not exist in our records, please check your spelling and try again")
                 return redirect(url_for('ban_users'))
+            
             cur.execute('SELECT * FROM user WHERE username = ? AND is_banned = 0', (username_unban, ))
             print('check username_un', username_unban)
             check_unban = cur.fetchone()
             print('check unban', check_unban)
+            
             # check if this user exist in the banned users list
             if check_unban is not None:
                 flash('This user does not exist in the banned users list')
@@ -381,10 +385,12 @@ def notification():
     username = current_user.username
     now = datetime.now()
     if request.method == 'POST':
+        
         # create notification
         if current_user.is_authenticated:
             if 'notif_create' in request.form: 
                 notif_create = request.form['notif_create']
+                
                 # check if notification exists
                 check_duplicate = cur.execute('SELECT * FROM notification ORDER BY date_made DESC LIMIT 1').fetchone()
                 desc = check_duplicate[2]
@@ -402,12 +408,14 @@ def notification():
             elif 'notif_update' in request.form:
                 notif_update = request.form['notif_update']
                 id = request.form['update_notif_id']
+                
                 # check if notification exists
                 check_duplicate_update = cur.execute('SELECT * FROM notification ORDER BY date_made DESC LIMIT 1').fetchone()
                 desc_update = check_duplicate_update[2]
                 if desc_update == notif_update:
                     flash("This notification is already exist")
                     return redirect(url_for('notification'))
+                
                 # check if id exists in the database
                 id_check = cur.execute('SELECT * FROM notification WHERE notification_id=?',(id,)).fetchone()
                 if id_check is None:
@@ -418,6 +426,7 @@ def notification():
                     con.commit()
                     flash("notification updated")
                     return redirect (url_for('notification'))
+            
             # Delete Notification
             elif 'delete' in request.form:
                 print("test delete")
@@ -432,13 +441,13 @@ def notification():
                     con.commit()
                     flash("notification deleted")
                     return redirect(url_for('notification'))
-    # Display notification      
-    notif_list = cur.execute("SELECT notification.notification_id, notification.notif_desc, user.username, notification.date_made FROM notification INNER JOIN user ON notification.user_id=user.user_id").fetchall()
+    
+    # Display notification ordered by date made       
+    notif_list = cur.execute("SELECT notification.notification_id, notification.notif_desc, user.username, notification.date_made FROM notification INNER JOIN user ON notification.user_id=user.user_id ORDER BY date_made DESC").fetchall()
     if notif_list == []:
         notif_list = [('N/A','Currently have no notification','N/A','N/A','N/A')]  
     else:
         notif_list = [(row[0], row[1], row[2], row[3][:10], row[3][11:19]) for row in notif_list]
-    # print(notif_list)
       
     return render_template('notification.html', title='notification', notif_list=notif_list, username=username)
 
@@ -492,6 +501,7 @@ def add_admin():
         if 'username' in request.form:
             # get the username from html input field
             username = request.form['username']
+           
             # check if the user exists in the database
             user_exist = cur.execute('SELECT * FROM user WHERE username=?',(username,)).fetchall()
             if user_exist == []:
@@ -507,19 +517,24 @@ def add_admin():
             else:
                 cur.execute('UPDATE user SET is_admin = 1 WHERE username = ?', (username,))
                 con.commit()
+        
         # delete admin   
         elif 'username_del' in request.form:
             # get the username from html input field
             username_del = request.form['username_del']
+            
             # check if the user exists in the database
             user_exist = cur.execute('SELECT * FROM user WHERE username=?',(username_del,)).fetchall()
             if user_exist == []:
                 flash("This username does not exist in our records, please check your spelling and try again")
                 return redirect(url_for('add_admin'))
+            
             cur.execute('SELECT * FROM user WHERE username = ? AND is_admin = 0', (username_del, ))
             print('check username_del', username_del)
             check_del = cur.fetchone()
             print('check del', check_del)
+            
+            # check if user is already exist in the admin list
             if check_del is not None:
                 flash('This user does not exist in the admin list')
                 con.commit
@@ -528,7 +543,7 @@ def add_admin():
                 con.commit()
         return redirect(url_for('add_admin'))        
             
-    # show admin list        
+    # show admin list    
     cur.execute("SELECT * FROM user WHERE is_admin = 1")
     admin = cur.fetchall()
     if admin == []:
