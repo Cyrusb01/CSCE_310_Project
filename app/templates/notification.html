@@ -1,5 +1,7 @@
 {% extends 'adminTemplate.html'%} {% block title %} notification {% endblock %}
-{%block content %}
+{% block username %}
+<h5 class="text-nowrap my-auto" style="color: white">Welcome, {{username}}</h5>
+{% endblock %} {%block content %}
 <h1>{% block admin_title %} Manage Notification {% endblock %}</h1>
 <p>
   Notify everyone what's going on .. (The latest updated notification will

@@ -259,7 +259,6 @@ def change_username():
     return render_template('change_username.html')
 
 
-# TODO: polish admin homepage fix admin button 
 @app.route("/admin", methods=['GET', 'POST'])
 def admin():
     """
@@ -278,6 +277,7 @@ def ban_users():
 
     ban and unban user, and show banned users list
     """
+    username = current_user.username
     if request.method == 'POST':
         # ban user
         # if user is banned, he/she should not be able to access anything on the index page
@@ -341,7 +341,7 @@ def ban_users():
     banned_user = cur.fetchall()
     if banned_user == []:
         banned_user = [('dummy','Currently have no banned users')]    
-    return render_template('banUsers.html', title='ban_users', banned_user = banned_user)
+    return render_template('banUsers.html', title='ban_users', banned_user = banned_user, username=username)
 
 
 @app.route("/notification", methods=['GET', 'POST'])
@@ -351,6 +351,7 @@ def notification():
     
     add, update, delete notification
     """
+    username = current_user.username
     now = datetime.now()
     if request.method == 'POST':
         # create notification
@@ -401,12 +402,12 @@ def notification():
         notif_list = [(row[0], row[1], row[2], row[3][:10], row[3][11:19]) for row in notif_list]
     # print(notif_list)
       
-    return render_template('notification.html', title='notification', notif_list=notif_list)
+    return render_template('notification.html', title='notification', notif_list=notif_list, username=username)
 
 
 @app.route("/warning", methods=['GET', 'POST'])
 def warning():
-    return render_template('warning.html', title='warning')
+    return render_template('warning.html', title='warning', username=current_user.username)
 
 
 @app.route("/add_admin", methods=['GET', 'POST'])
@@ -463,7 +464,7 @@ def add_admin():
     if admin == []:
         admin = [('dummy','Currently have no admins')]     
     con.commit() 
-    return render_template('addAdmin.html', title='add_admin', admin_list = admin)
+    return render_template('addAdmin.html', title='add_admin', admin_list = admin, username=current_user.username)
 
 
 @app.route("/ban_page", methods=['GET', 'POST'])
@@ -473,7 +474,7 @@ def ban_page():
 
     Display when user is in banned users list
     """
-    return render_template('banPage.html', title='ban_page')
+    return render_template('banPage.html', title='ban_page', username=current_user.username)
 
 
 @app.route("/logout")

@@ -66,3 +66,8 @@ td {
   top: 3px;
   color: #ff0000;
 }
+
+.bg {
+  background-image: url("/static/admin.jpg");
+  /* background-color: #cccccc; */
+}

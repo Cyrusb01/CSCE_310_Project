@@ -1,5 +1,7 @@
-{% extends 'adminTemplate.html'%} {% block title %} Admin {% endblock %} {%block
-content %}
+{% extends 'adminTemplate.html'%} {% block title %} Admin {% endblock %} {%
+block username %}
+<h5 class="text-nowrap my-auto" style="color: white">Welcome, {{username}}</h5>
+{% endblock %} {%block content %}
 <h1>{% block admin_title %} Welcome, Admin {% endblock %}</h1>
 <p>Who does not want to have a power?</p>
 <div class="row mt-4">

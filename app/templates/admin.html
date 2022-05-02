@@ -1,9 +1,20 @@
-{% extends 'adminTemplate.html'%} {% block title %} Homepage {% endblock %}
-{%block content %}
+{% extends 'adminTemplate.html'%} {% block title %} Homepage {% endblock %} {%
+block username %}
+<h5 class="text-nowrap my-auto" style="color: white">Welcome, {{username}}</h5>
+{% endblock %} {%block content %}
 
-<div id="box" class="container-fluid border w-75 mt-5">
-  <h1>{% block admin_title %} Welcome, Admin {{username}} {% endblock %}</h1>
-  <h1>You can manage the site through this admin portal.</h1>
+<div id="box" class="container">
+  <img
+    src="{{ url_for('static',    filename='admin.jpg') }}"
+    style="width: 90%; height: 60%"
+  />
+  <!--<h1 class="mt-4 ms-5 me-5">
+    {% block admin_title %} Welcome, Admin {{username}} {% endblock %}
+  </h1>
+  <h2 class="mt-3 mb-5 ms-5 me-5">
+    Managing the site's administration is easy — navigate to the left navigation
+    bar to find your way around.
+  </h2>-->
 </div>
 
 {% endblock %}
