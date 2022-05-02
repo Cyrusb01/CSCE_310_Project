@@ -19,11 +19,22 @@ cur = con.cursor()
 @app.route('/postItem')
 @login_required
 def postItem():
+    """
+    Matt
+
+    Must be Logged it to render this page!
+    Renders the landing page of Posting an Item
+    """
     return render_template('postItem.html', title="Post an Item Here!", user=current_user)
 
 
 @app.route('/addItemForm', methods=["POST"])
 def addItemForm():
+    """
+    Matt
+
+    Post method handles adding new Instance of Item to the database, then renders a "successfully posted" page
+    """
     item_name = request.form.get("item_name")
     item_desc = request.form.get("item_desc")
     price = request.form.get("price")
@@ -41,6 +52,11 @@ def addItemForm():
 
 @app.route('/updateItemForm', methods=["POST"])
 def updateItemForm():
+    """
+    Matt
+
+    Post method handles updating an item by "item_name" . Only lets you update item if youre the user that posts it
+    """
     item_name = request.form.get("item_name")
     price = request.form.get("price")
 
@@ -52,6 +68,13 @@ def updateItemForm():
 
 @app.route('/deleteItemForm', methods=['GET', 'POST'])
 def deleteItemForm():
+    """
+    Matt
+
+    Post method handles deleting an item by "item_ID" . 
+    Method receives id from html template and stores in "my_var" variable
+    Only lets you delete item if youre the user that posts it
+    """
     _item_name = request.form.get("delete_item")
     my_var = request.args.get('my_var', None)
 
@@ -104,7 +127,7 @@ def item(id_):
     """
     item = db.engine.execute(f"SELECT * FROM item WHERE item_id = {id_}").first()
 
-
+    
     warning = db.engine.execute(f"SELECT * FROM warning WHERE warning_id = {item.warning_id}").first()
 
 
@@ -452,11 +475,20 @@ def notification():
 
 @app.route("/warning")
 def warning():
+    """
+    Matt
+
+    Renders Admin warning portal
+    """
     return render_template('warning.html', title='warning', username=current_user.username)
 
 @app.route('/warningForm', methods=["POST"])
 def warningForm():
-   #add_warning_title = request.form.get("add_warning_title")
+    """
+    Matt
+
+    Adds a warning to the item by instantiating a "warning" instance and then assigning that warning ID to the item's warning_id field
+    """
     add_warning_desc = request.form.get("add_warning_desc")
     add_warning_item_id = request.form.get("add_warning_item_id")
     warning = Warnings( warning_desc = add_warning_desc)
@@ -469,6 +501,11 @@ def warningForm():
 
 @app.route('/updateWarningForm', methods=["POST"])
 def updateWarningForm():
+    """
+    Matt
+
+    Updates a warning on an item by assigning that warning ID to the item's warning_id field
+    """
     update_warning_desc = request.form.get("update_warning_desc")
     update_warning_item_id = request.form.get("update_warning_item_id")
     warning = Warnings( warning_desc = update_warning_desc)
@@ -481,6 +518,11 @@ def updateWarningForm():
 
 @app.route('/deleteWarningForm', methods=["POST"])
 def deleteWarningForm():
+    """
+    Matt
+
+    Deletes a warning on an item by assigning nul to the item's warning_id field
+    """
     delete_warning_item_id = request.form.get("delete_warning_item_id")
     db.engine.execute('UPDATE item SET warning_id = ? WHERE item_id = ?', ("000",delete_warning_item_id))
     db.session.commit()
