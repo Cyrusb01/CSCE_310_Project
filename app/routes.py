@@ -73,15 +73,18 @@ def shop():
 @login_required
 def item(id_):
     """
-    Cyrus and someone 
+    Cyrus and Michael
 
     This route shows the item page, equipped with a couple features
     """
     item = db.engine.execute(f"SELECT * FROM item WHERE item_id = {id_}").first()
 
+    # Michael
+    # Query Reviews
     item_reviews = []
     reviews = db.engine.execute(f"SELECT * FROM review WHERE item_id = {id_}")
 
+    # Format reviews
     for row in reviews:
         review_dict = dict(row._mapping)
         review_dict['user_name'] = str(db.engine.execute(f"SELECT username FROM user WHERE user_id = {review_dict['user_id']}").first())[2:-3]
@@ -95,11 +98,12 @@ def item(id_):
     if item_rating != 0:
         item_rating /= len(item_reviews)
 
+    # Insert Reviews
     if request.method == 'POST' and 'reviewText' in request.form:
         review = Reviews(item_id=id_, user_id=current_user.user_id, message=request.form['reviewText'], rating=request.form['reviewRating'])
         db.session.add(review)
         db.session.commit()
-        print("Added Review")
+        # print("Added Review")
         return redirect(url_for('item', id_=id_))
 
     #Cyrus 
@@ -128,9 +132,9 @@ def item(id_):
             db.engine.execute('UPDATE bidding SET top_bid = ?, bid_placed_date = ? WHERE item_id = ? and user_id = ?', (top_bid, now, id_, current_user.user_id))
             db.session.commit()
 
+    # Michael
     # Delete the bid
     if request.method == 'POST' and 'remove_bid' in request.form:
-
         #DELETE BID 
         db.session.execute(f'DELETE FROM bidding WHERE item_id = {id_} and user_id = {current_user.user_id}')
         db.session.commit()
@@ -138,6 +142,7 @@ def item(id_):
         return redirect(url_for('item', id_=id_))
 
     if request.method == 'POST' and 'delete_review_button' in request.form:
+        # Delete Review
         review_id = request.form['delete_review_button']
 
         cur.execute(f"DELETE FROM review WHERE review_id = {review_id}")
@@ -146,6 +151,7 @@ def item(id_):
         return redirect(url_for('item', id_=id_))
 
     if request.method == 'POST' and 'updateReviewButton' in request.form:
+        # Update Review
         review_id = request.form['updateReviewButton']
         new_review_desc = request.form['newReviewText']
         new_review_rating = request.form['newReviewRating']
@@ -160,7 +166,7 @@ def item(id_):
 
 @app.route('/buy/<id_>', methods=['GET', 'POST'])
 def buy(id_):
-
+    # Insert Order and handle bidding
     if current_user.is_authenticated:
         bid_exist = cur.execute('SELECT * FROM bidding WHERE item_id=?',(id_)).fetchall()
         bid_id_ = 9999
@@ -516,7 +522,7 @@ def manageOrders():
 
             return redirect(url_for('manageOrders'))
 
-    # display list of past orders
+    # query list of past orders
     orders = db.session.query(Orders).filter_by(user_id=current_user.user_id).all()
     item_id_name = []
     for order in orders:
