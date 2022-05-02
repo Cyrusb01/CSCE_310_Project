@@ -1,10 +1,11 @@
 from turtle import title
-
-from sqlalchemy import false
+from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.orm.exc import MultipleResultsFound
+from sqlalchemy import false, delete
 from app import app, db
-from flask import render_template, url_for, flash, redirect, request
+from flask import render_template, url_for, flash, redirect, request, session
 from flask_login import login_user, login_required, user_logged_in, current_user, logout_user
-from app.forms import LoginForm, RegistrationForm, PostItemForm
+from app.forms import LoginForm, RegistrationForm
 
 
 from app.models import User, Bidding, Item, Notification, Warnings, Reviews, Orders, Banned
@@ -21,8 +22,8 @@ def postItem():
     return render_template('postItem.html', title="Post an Item Here!", user=current_user)
 
 
-@app.route('/itemForm', methods=["POST"])
-def itemForm():
+@app.route('/addItemForm', methods=["POST"])
+def addItemForm():
     item_name = request.form.get("item_name")
     item_desc = request.form.get("item_desc")
     price = request.form.get("price")
@@ -35,7 +36,30 @@ def itemForm():
     item = Item(item_name = item_name, user_id = current_user.user_id, warning_id="000", item_desc = item_desc, price =price, pic_url=pic_url, is_biddable=booleancheck)
     db.session.add(item)
     db.session.commit()
-    return render_template('itemForm.html')
+    return render_template('addItemForm.html')
+
+
+@app.route('/updateItemForm', methods=["POST"])
+def updateItemForm():
+    item_name = request.form.get("item_name")
+    price = request.form.get("price")
+
+    db.engine.execute('UPDATE item SET price = ? WHERE item_name = ? and user_id = ?', (price,item_name,current_user.user_id))
+    db.session.commit()
+
+    return render_template('updateItemForm.html')
+    
+
+@app.route('/deleteItemForm', methods=['GET', 'POST'])
+def deleteItemForm():
+    _item_name = request.form.get("delete_item")
+    my_var = request.args.get('my_var', None)
+
+    db.engine.execute('DELETE FROM item WHERE item_id= ? and user_id = ?',(my_var,current_user.user_id))
+    db.session.commit()
+    return render_template('deleteItemForm.html')
+
+
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -72,12 +96,15 @@ def shop():
 @app.route('/item/<id_>', methods=['GET', 'POST'])
 @login_required
 def item(id_):
+
     """
     Cyrus and someone 
 
     This route shows the item page, equipped with a couple features
     """
     item = db.engine.execute(f"SELECT * FROM item WHERE item_id = {id_}").first()
+
+    warning = db.engine.execute(f"SELECT * FROM warning WHERE warning_id = {item.warning_id}").first()
 
     item_reviews = []
     reviews = db.engine.execute(f"SELECT * FROM review WHERE item_id = {id_}")
@@ -155,7 +182,7 @@ def item(id_):
         
         return redirect(url_for('item', id_=id_))
 
-    return render_template("item.html", item=item, item_reviews=item_reviews, item_rating=item_rating, top_bid=top_bid, user=current_user)
+    return render_template("item.html", item=item, item_reviews=item_reviews, item_rating=item_rating, top_bid=top_bid, user=current_user, warning=warning)
 
 
 @app.route('/buy/<id_>', methods=['GET', 'POST'])
@@ -400,17 +427,39 @@ def notification():
 
 @app.route("/warning")
 def warning():
-    
     return render_template('warning.html', title='warning')
 
 @app.route('/warningForm', methods=["POST"])
 def warningForm():
    #add_warning_title = request.form.get("add_warning_title")
-    warning_desc = request.form.get("add_warning_desc")
-    warning = Warnings( warning_desc = warning_desc)
+    add_warning_desc = request.form.get("add_warning_desc")
+    add_warning_item_id = request.form.get("add_warning_item_id")
+    warning = Warnings( warning_desc = add_warning_desc)
     db.session.add(warning)
     db.session.commit()
+
+    db.engine.execute('UPDATE item SET warning_id = ? WHERE item_id = ?', (warning.warning_id,add_warning_item_id))
+    db.session.commit()
     return render_template('warningForm.html')
+
+@app.route('/updateWarningForm', methods=["POST"])
+def updateWarningForm():
+    update_warning_desc = request.form.get("update_warning_desc")
+    update_warning_item_id = request.form.get("update_warning_item_id")
+    warning = Warnings( warning_desc = update_warning_desc)
+    db.session.add(warning)
+    db.session.commit()
+
+    db.engine.execute('UPDATE item SET warning_id = ? WHERE item_id = ?', (warning.warning_id,update_warning_item_id))
+    db.session.commit()
+    return render_template('updateWarningForm.html')   
+
+@app.route('/deleteWarningForm', methods=["POST"])
+def deleteWarningForm():
+    delete_warning_item_id = request.form.get("delete_warning_item_id")
+    db.engine.execute('UPDATE item SET warning_id = ? WHERE item_id = ?', ("000",delete_warning_item_id))
+    db.session.commit()
+    return render_template('deleteWarningForm.html') 
 
 
 @app.route("/add_admin", methods=['GET', 'POST'])

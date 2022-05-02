@@ -16,25 +16,26 @@
           <form class="px-4 py-3" action="/warningForm" method="POST">
             <div class="mb-3">
               <label for="exampleDropdownFormEmail1" class="form-label"
-                >Title</label
+                >Item ID</label
               >
 
               <input
                 type="text"
-                name="add_warning_title"
+                name="add_warning_item_id"
                 class="form-control"
-                placeholder="Title"
+                placeholder="the id of the item in question"
               />
             </div>
             
             <div class="mb-3">
               <label for="exampleFormControlTextarea1" class="form-label"
-                >Description</label
+                >Warning Description</label
               >
               <textarea
                 class="form-control"
                 name="add_warning_desc"
                 id="exampleFormControlTextarea1"
+                placeholder="This item seems potentially fraudulent"
                 rows="3"
               ></textarea>
             </div>
@@ -52,25 +53,29 @@
         <!-- Update Form -->
         <h3 class="text-center">Update Warning</h3>
         <div>
-          <form class="px-4 py-3" action="" method="POST">
+          <form class="px-4 py-3" action="/updateWarningForm" method="POST">
             <div class="mb-3">
               <label for="exampleDropdownFormEmail1" class="form-label"
-                >Title</label
+                >Item ID</label
               >
+
               <input
                 type="text"
-                name="update_title"
+                name="update_warning_item_id"
                 class="form-control"
-                placeholder="title"
+                placeholder="the id of the item in question"
               />
             </div>
+            
             <div class="mb-3">
-              <label for="exampleFormControlTextarea2" class="form-label"
-                >Description</label
+              <label for="exampleFormControlTextarea1" class="form-label"
+                >Warning Description</label
               >
               <textarea
                 class="form-control"
-                id="exampleFormControlTextarea2"
+                name="update_warning_desc"
+                id="exampleFormControlTextarea1"
+                placeholder="This item seems potentially fraudulent"
                 rows="3"
               ></textarea>
             </div>
@@ -85,34 +90,25 @@
       <div
         class="card-header p-0 position-relative mt-n4 mx-3 my-4 z-index-2 bg-transparent"
       >
-        <!-- Delete Form -->
+        <!-- Update Form -->
         <h3 class="text-center">Delete Warning</h3>
         <div>
-          <form class="px-4 py-3" action="" method="POST">
+          <form class="px-4 py-3" action="/deleteWarningForm" method="POST">
             <div class="mb-3">
               <label for="exampleDropdownFormEmail1" class="form-label"
-                >Title</label
+                >Item ID</label
               >
 
               <input
                 type="text"
-                name="delete_title"
+                name="delete_warning_item_id"
                 class="form-control"
-                placeholder="Title"
+                placeholder="the id of the item in question"
               />
             </div>
-            <div class="mb-3">
-              <label for="exampleDropdownFormPassword1" class="form-label"
-                >ID</label
-              >
-              <input
-                type="password"
-                name="id"
-                class="form-control"
-                id="exampleDropdownFormPassword1"
-                placeholder="id"
-              />
-            </div>
+            
+            
+            
             <button type="submit" class="btn btn-primary">Delete</button>
           </form>
         </div>
