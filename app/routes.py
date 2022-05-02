@@ -300,9 +300,7 @@ def admin():
 @app.route("/ban_users", methods=['GET', 'POST'])
 def ban_users():
     """
-    Patcharapa
-
-    ban and unban user, and show banned users list
+    Patcharapa:  ban and unban user, and show banned users list
     """
     username = current_user.username
     if request.method == 'POST':
@@ -327,6 +325,7 @@ def ban_users():
             # check if this user is already banned
             if check_ban is not None:
                 flash('This user is already banned')
+                return redirect(url_for('ban_users'))
             else:
                 # update user
                 cur.execute('UPDATE user SET is_banned = 1 WHERE username = ?', (username,))
